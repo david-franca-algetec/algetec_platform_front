@@ -255,7 +255,7 @@ export function LabsShow() {
                 <Space align="center" direction="vertical" className="w-full">
                   <Title level={5}>Problemas por Gravidade</Title>
                 </Space>
-                {labData.issues && labData.issues.length ? (
+                {labData.issues?.length ? (
                   <div className="lg:px-16">
                     <IssueChart issues={labData.issues} />
                   </div>
@@ -274,79 +274,72 @@ export function LabsShow() {
         </Col>
       </Row>
     ) : null,
-    issues:
-      labData && labData.issues ? <IssuesTable dataSource={labData.issues} loading={isLoading || isFetching} /> : null,
-    demands:
-      labData && labData.demands ? (
-        <DemandsTable dataSource={labData.demands} loading={isLoading || isFetching} />
-      ) : null,
-    versions:
-      labData && labData.releases ? (
-        <ReleaseTable dataSource={labData.releases} loading={isLoading || isFetching} />
-      ) : null,
-    changelog:
-      labData && labData.releases.length ? (
-        <Timeline
-          mode="alternate"
-          items={orderBy(handleRelease(labData.releases), 'created_at', 'desc').map((release) => ({
-            label: <Title level={5}>{moment(release.created_at).calendar()}</Title>,
-            children: (
-              <Card key={nanoid()} title={completeVersion(release.version)}>
-                <Space>
-                  {release.releaseType.map((type) => (
-                    <TagField key={nanoid()} value={type.name} color={type.color} />
-                  ))}
-                </Space>
+    issues: labData?.issues ? <IssuesTable dataSource={labData.issues} loading={isLoading || isFetching} /> : null,
+    demands: labData?.demands ? <DemandsTable dataSource={labData.demands} loading={isLoading || isFetching} /> : null,
+    versions: labData?.releases ? (
+      <ReleaseTable dataSource={labData.releases} loading={isLoading || isFetching} />
+    ) : null,
+    changelog: labData?.releases.length ? (
+      <Timeline
+        mode="alternate"
+        items={orderBy(handleRelease(labData.releases), 'created_at', 'desc').map((release) => ({
+          label: <Title level={5}>{moment(release.created_at).calendar()}</Title>,
+          children: (
+            <Card key={nanoid()} title={completeVersion(release.version)}>
+              <Space>
+                {release.releaseType.map((type) => (
+                  <TagField key={nanoid()} value={type.name} color={type.color} />
+                ))}
+              </Space>
 
-                {release.description ? <Divider /> : null}
-                <Paragraph
-                  className="text-justify"
-                  ellipsis={{
-                    rows: 2,
-                    expandable: true,
-                    symbol: 'mais',
-                  }}
-                >
-                  {release.description}
-                </Paragraph>
-                <Divider />
-                <TextField className="italic text-gray-400" value={`"${release.author.name}"`} />
-              </Card>
-            ),
-          }))}
-        />
-      ) : (
-        <Empty />
-      ),
-    files:
-      labData && labData.demands.length ? (
-        <List
-          grid={{ gutter: 16, column: 2, lg: 2, md: 1 }}
-          dataSource={handleFiles(labData)}
-          renderItem={(item) => (
-            <List.Item key={nanoid()}>
-              <Card>
-                <Row>
-                  <Col span={18}>
-                    <List.Item.Meta
-                      title={`Enviado por ${item.user.name}`}
-                      description={moment(item.created_at).calendar()}
-                    />
-                    <UrlField target="_blank" value={item.link}>
-                      {handleLinkName(item.name)}
-                    </UrlField>
-                  </Col>
-                  <Col span={6}>
-                    <Button block className="h-full" icon={handleExtension(item.name)} />
-                  </Col>
-                </Row>
-              </Card>
-            </List.Item>
-          )}
-        />
-      ) : (
-        <Empty />
-      ),
+              {release.description ? <Divider /> : null}
+              <Paragraph
+                className="text-justify"
+                ellipsis={{
+                  rows: 2,
+                  expandable: true,
+                  symbol: 'mais',
+                }}
+              >
+                {release.description}
+              </Paragraph>
+              <Divider />
+              <TextField className="italic text-gray-400" value={`"${release.author.name}"`} />
+            </Card>
+          ),
+        }))}
+      />
+    ) : (
+      <Empty />
+    ),
+    files: labData?.demands.length ? (
+      <List
+        grid={{ gutter: 16, column: 2, lg: 2, md: 1 }}
+        dataSource={handleFiles(labData)}
+        renderItem={(item) => (
+          <List.Item key={nanoid()}>
+            <Card>
+              <Row>
+                <Col span={18}>
+                  <List.Item.Meta
+                    title={`Enviado por ${item.user.name}`}
+                    description={moment(item.created_at).calendar()}
+                  />
+                  <UrlField target="_blank" value={item.link}>
+                    {handleLinkName(item.name)}
+                  </UrlField>
+                </Col>
+                <Col span={6}>
+                  <Button block className="h-full" icon={handleExtension(item.name)} />
+                </Col>
+              </Row>
+            </Card>
+          </List.Item>
+        )}
+      />
+    ) : (
+      <Empty />
+    ),
   };
 
   useEffect(() => {
