@@ -1,12 +1,20 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { Action, combineReducers, configureStore, ConfigureStoreOptions, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import { api } from './reducers/apiSlice';
+import assistantReducer from './reducers/assistantSlice';
 import authReducer from './reducers/authSlice';
+import calendarReducer from './reducers/calendarSlice';
 import cartReducer from './reducers/cartSlice';
-import institutionReducer from './reducers/institutionSlice';
+import dashboardReducer from './reducers/dashboardSlice';
+import demandReducer from './reducers/demandSlice';
+import issuesReducer from './reducers/issuesSlice';
+import labReducer from './reducers/labSlice';
+import versionReducer from './reducers/versionSlice';
 
 const persistConfig = {
   key: 'root',
@@ -18,7 +26,13 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   cart: cartReducer,
-  institution: institutionReducer,
+  assistant: assistantReducer,
+  calendar: calendarReducer,
+  dashboard: dashboardReducer,
+  demand: demandReducer,
+  version: versionReducer,
+  issues: issuesReducer,
+  lab: labReducer,
   [api.reducerPath]: api.reducer,
 });
 
@@ -39,7 +53,7 @@ const createStore = (options?: ConfigureStoreOptions['preloadedState'] | undefin
 
 export const store = createStore();
 
-export const persistor = persistStore(store);
+export const persist = persistStore(store);
 
 setupListeners(store.dispatch);
 

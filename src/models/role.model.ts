@@ -1,11 +1,16 @@
 export type Role = {
-  id: number;
-  name: string;
-  assets: boolean;
   admin: boolean;
+  assets: boolean;
+  checklists: boolean;
+  created_at: string;
   demands: boolean;
   demands_admin: boolean;
-  created_at: string;
+  demands_leader: boolean;
+  id: number;
+  issues: true;
+  name: string;
+  releases: boolean;
+  super_admin: boolean;
   updated_at: string;
 };
 

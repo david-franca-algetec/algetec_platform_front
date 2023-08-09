@@ -1,147 +1,195 @@
-import { useFormik } from 'formik';
-import { useEffect, useMemo } from 'react';
-import { toast } from 'react-toastify';
+// noinspection JSIgnoredPromiseFromCall
 
-import { Button, Center, Flex, Spinner } from '../../components';
-import { Fieldset, Input, Label } from '../../components/Dialog';
-import { Select } from '../../components/Select';
+import { Form, Input, message, Modal, Select } from 'antd';
+
+import { orderBy } from 'lodash';
+import { useEffect, useMemo } from 'react';
+import { handleError, handleTypeName } from '../../helpers';
 import { UserUpdate } from '../../models/user.model';
 import { useGetDepartmentsQuery } from '../../services/department.service';
 import { useGetRolesQuery } from '../../services/role.service';
 import { useGetUserByIdQuery, useUpdateUserMutation } from '../../services/user.service';
+import { EditProps } from '../types';
 
-interface EditUserProps {
-  onClose: (open: boolean) => void;
-  id: number;
-}
-
-export function EditUser({ onClose, id }: EditUserProps) {
+export function EditUser({ onClose, id, open }: EditProps) {
+  const [toast, contextHolder] = message.useMessage();
   const { data: userData, isLoading } = useGetUserByIdQuery(id, {
     skip: !id,
   });
-  const [updateUser, { isError, isSuccess, isLoading: userUpdateLoading }] = useUpdateUserMutation();
+  const [updateUser, { isError, error, isSuccess, isLoading: userUpdateLoading }] = useUpdateUserMutation();
   const { data: rolesData, isLoading: isLoadingRoles } = useGetRolesQuery();
   const { data: departmentsData, isLoading: isLoadingDepartments } = useGetDepartmentsQuery();
 
   const roleOptions = useMemo(
-    () =>
-      rolesData
-        ? [
-            { label: 'Selecione um nível de acesso', value: '0' },
-            ...rolesData.map((role) => ({ label: role.name, value: role.id.toString() })),
-          ]
-        : [],
+    () => (rolesData ? orderBy(rolesData, 'name').map((role) => ({ label: role.name, value: role.id })) : []),
     [rolesData],
   );
 
   const departmentOptions = useMemo(
     () =>
       departmentsData
-        ? [
-            { label: 'Selecione um departamento', value: '0' },
-            ...departmentsData.map((department) => ({ label: department.name, value: department.id.toString() })),
-          ]
+        ? orderBy(departmentsData, 'name').map((department) => ({
+            label: handleTypeName(department.name),
+            value: department.id,
+          }))
         : [],
     [departmentsData],
   );
   const initialValues: UserUpdate = {
     id: 0,
-    name: '',
-    email: '',
+    name: undefined,
+    email: undefined,
     password: undefined,
-    department_id: 0,
-    role_id: 0,
+    department_id: undefined,
+    role_id: undefined,
   };
-  const formik = useFormik({
-    initialValues,
-    onSubmit: (values) => {
-      if (values.password === '') {
-        // eslint-disable-next-line no-param-reassign
-        delete values.password;
-      }
-      updateUser(values);
-    },
-  });
+
+  const [form] = Form.useForm<UserUpdate>();
+
+  const onFinish = async () => {
+    const values = await form.validateFields();
+    updateUser({ ...values, id });
+  };
+
+  const onCancel = () => {
+    form.resetFields();
+    onClose();
+  };
 
   useEffect(() => {
-    if (userData) {
-      formik.setValues({
+    if (userData && open) {
+      form.setFieldsValue({
         id: userData.id,
         name: userData.name,
         email: userData.email,
-        password: '',
         department_id: userData.department_id,
         role_id: userData.role_id,
       });
     }
-  }, [userData]);
+  }, [userData, open]);
 
   useEffect(() => {
-    if (isError) {
-      toast.error('Erro ao atualizar usuário');
+    if (isError && error && 'data' in error) {
+      toast.error(handleError(error));
     }
     if (isSuccess) {
-      formik.resetForm();
       toast.success('Usuário atualizado com sucesso');
-      onClose(true);
+      form.resetFields();
+      onClose();
     }
   }, [isError, isSuccess]);
 
-  if (isLoading) {
-    return (
-      <Center css={{ width: '100%' }}>
-        <Spinner />
-      </Center>
-    );
-  }
-
   return (
-    <form noValidate onSubmit={formik.handleSubmit}>
-      <Fieldset>
-        <Label htmlFor="name">Nome</Label>
-        <Input id="name" name="name" type="text" onChange={formik.handleChange} value={formik.values.name} />
-      </Fieldset>
-      <Fieldset>
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" onChange={formik.handleChange} value={formik.values.email} />
-      </Fieldset>
-      <Fieldset>
-        <Label htmlFor="password">Senha</Label>
-        <Input
-          id="password"
+    <Modal
+      title="Editar Usuário"
+      open={open}
+      okText="Salvar"
+      cancelText="Cancelar"
+      onCancel={onCancel}
+      onOk={onFinish}
+      okButtonProps={{
+        loading: userUpdateLoading,
+      }}
+      maskStyle={{
+        backdropFilter: 'blur(8px)',
+      }}
+    >
+      {contextHolder}
+      <Form form={form} layout="vertical" initialValues={initialValues}>
+        <Form.Item
+          name="name"
+          label="Nome"
+          rules={[
+            {
+              required: true,
+              message: 'O nome é obrigatório',
+            },
+            {
+              min: 3,
+              max: 100,
+              message: 'O nome deve conter entre 3 e 100 caracteres',
+            },
+          ]}
+        >
+          <Input disabled={isLoading} />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[
+            {
+              required: true,
+              message: 'O email é obrigatório',
+            },
+            {
+              type: 'email',
+              message: 'Email inválido',
+            },
+            {
+              min: 3,
+              max: 100,
+              message: 'O email deve conter entre 3 e 100 caracteres',
+            },
+          ]}
+        >
+          <Input disabled={isLoading} />
+        </Form.Item>
+        <Form.Item
           name="password"
-          type="password"
-          onChange={formik.handleChange}
-          value={formik.values.password}
-        />
-      </Fieldset>
-      <Fieldset>
-        <Label htmlFor="department_id">Departamento</Label>
-        <Select
-          value={formik.values.department_id?.toString()}
-          onValueChange={(value) => {
-            formik.setFieldValue('department_id', value);
-          }}
-          items={departmentOptions}
-          disabled={isLoadingDepartments}
-        />
-      </Fieldset>
-      <Fieldset>
-        <Label htmlFor="role_id">Nível de Acesso</Label>
-        <Select
-          value={formik.values.role_id?.toString()}
-          onValueChange={(value) => {
-            formik.setFieldValue('role_id', value);
-          }}
-          items={roleOptions}
-          disabled={isLoadingRoles}
-        />
-      </Fieldset>
-      <Flex css={{ marginTop: 25, justifyContent: 'flex-end' }}>
-        <Button type="submit" color="green" isLoading={userUpdateLoading}>
-          Salvar
-        </Button>
-      </Flex>
-    </form>
+          label="Senha"
+          rules={[
+            {
+              min: 6,
+              max: 100,
+              message: 'A senha deve conter entre 6 e 100 caracteres',
+            },
+          ]}
+        >
+          <Input.Password disabled={isLoading} />
+        </Form.Item>
+        <Form.Item
+          name="department_id"
+          label="Departamento"
+          rules={[
+            {
+              required: true,
+              message: 'O departamento é obrigatório',
+            },
+            {
+              type: 'number',
+              message: 'O departamento deve ser um número',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Selecione um departamento"
+            showSearch
+            options={departmentOptions}
+            disabled={isLoadingDepartments}
+          />
+        </Form.Item>
+        <Form.Item
+          name="role_id"
+          label="Nível de Acesso"
+          rules={[
+            {
+              required: true,
+              message: 'O nível de acesso é obrigatório',
+            },
+            {
+              type: 'number',
+              message: 'O nível de acesso deve ser um número',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Selecione um nível de acesso"
+            showSearch
+            options={roleOptions}
+            disabled={isLoadingRoles}
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 }

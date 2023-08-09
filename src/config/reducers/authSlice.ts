@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Token, User } from '../../models';
 import { authApi } from '../../services/auth.service';
@@ -8,20 +8,28 @@ import { RootState } from '../store';
 interface AuthState {
   isLoggedIn: boolean;
   token: Token | null;
-  user: Omit<User, 'department'> | null;
+  user: User | null;
+  isDarkMode: boolean;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
   token: null,
   user: null,
+  isDarkMode: false,
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: () => initialState,
+    logout: (state) => ({
+      ...initialState,
+      isDarkMode: state.isDarkMode,
+    }),
+    setMode: (state, action: PayloadAction<boolean>) => {
+      state.isDarkMode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, { payload }) => {
@@ -37,6 +45,6 @@ export const authSlice = createSlice({
 });
 
 const { reducer } = authSlice;
-export const { logout } = authSlice.actions;
+export const { logout, setMode } = authSlice.actions;
 export default reducer;
 export const selectCurrentUser = (state: RootState) => state.auth.user;

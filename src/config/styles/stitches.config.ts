@@ -1,19 +1,7 @@
-import {
-  blackA,
-  blue,
-  blueDark,
-  cyan,
-  cyanDark,
-  gray,
-  grayDark,
-  mauve,
-  mauveDark,
-  violet,
-  violetDark,
-} from '@radix-ui/colors';
+import { blackA, blue, cyan, gray, mauve, violet } from '@radix-ui/colors';
 import { createStitches } from '@stitches/react';
 
-export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme, config } = createStitches({
+export const { styled, css, globalCss, config } = createStitches({
   theme: {
     fonts: {
       inter: 'Inter, sans-serif',
@@ -85,36 +73,7 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
     md: '(max-width: 768px)',
     lg: '(min-width: 769px)',
   },
-  utils: {
-    marginX: (value: string | number) => ({
-      marginLeft: value,
-      marginRight: value,
-    }),
-    marginY: (value: string | number) => ({
-      marginTop: value,
-      marginBottom: value,
-    }),
-    paddingX: (value: string | number) => ({
-      paddingLeft: value,
-      paddingRight: value,
-    }),
-    paddingY: (value: string | number) => ({
-      paddingTop: value,
-      paddingBottom: value,
-    }),
-  },
   prefix: 'platform',
-});
-
-export const darkTheme = createTheme('dark-theme', {
-  colors: {
-    ...violetDark,
-    ...blackA,
-    ...mauveDark,
-    ...blueDark,
-    ...grayDark,
-    ...cyanDark,
-  },
 });
 
 export const injectGlobalStyles = globalCss({

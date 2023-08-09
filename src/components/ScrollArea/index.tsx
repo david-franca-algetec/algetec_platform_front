@@ -1,3 +1,7 @@
+// eslint-disable-next-line import/no-unresolved
+import { Globals, Property } from '@stitches/react/types/css';
+// eslint-disable-next-line import/no-unresolved
+import { Index } from '@stitches/react/types/util';
 import { PropsWithChildren } from 'react';
 
 import {
@@ -8,9 +12,16 @@ import {
   ScrollAreaViewport,
 } from './styles';
 
-export function ScrollArea({ children }: PropsWithChildren) {
+interface ScrollAreaProps extends PropsWithChildren {
+  height?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Height | undefined;
+  width?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Width | undefined;
+  maxHeight?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxHeight | undefined;
+  maxWidth?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxWidth | undefined;
+}
+
+export function ScrollArea({ children, height, width, maxWidth, maxHeight }: ScrollAreaProps) {
   return (
-    <ScrollAreaContainer>
+    <ScrollAreaContainer css={{ height, width, maxHeight, maxWidth }}>
       <ScrollAreaViewport css={{ backgroundColor: 'inherit' }}>{children}</ScrollAreaViewport>
       <ScrollAreaScrollbar orientation="vertical">
         <ScrollAreaThumb />
@@ -19,3 +30,5 @@ export function ScrollArea({ children }: PropsWithChildren) {
     </ScrollAreaContainer>
   );
 }
+
+ScrollArea.defaultProps = { height: 300, width: undefined, maxWidth: undefined, maxHeight: undefined };

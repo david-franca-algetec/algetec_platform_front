@@ -33,9 +33,4 @@ export const departmentApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetDepartmentsQuery,
-  useCreateDepartmentMutation,
-  useUpdateDepartmentMutation,
-  useDestroyDepartmentMutation,
-} = departmentApi;
+export const { useGetDepartmentsQuery } = departmentApi;

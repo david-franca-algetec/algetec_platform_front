@@ -8,7 +8,3 @@ export type ContentType = {
   updated_at: string;
   assets: Omit<Asset, 'modifier' | 'experiments' | 'assetTags' | 'contentType' | 'developers' | 'creator'>[];
 };
-
-export type ContentTypeCreate = Pick<ContentType, 'name'>;
-
-export type ContentTypeUpdate = Pick<ContentType, 'id' | 'name'>;

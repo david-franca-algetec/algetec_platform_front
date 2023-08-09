@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { RootState } from '../store';
 
@@ -13,10 +13,10 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithRetry = retry(baseQuery, { maxRetries: 2 }); // retry up to 6 times
+// const baseQueryWithRetry = retry(baseQuery, { maxRetries: 2 }); // retry up to 6 times
 export const api = createApi({
   reducerPath: 'api', // this is the name of the reducer
-  baseQuery: baseQueryWithRetry, // or baseQuery
+  baseQuery, // or baseQuery: baseQueryWithRetry,
   tagTypes: [
     'AssetTag',
     'Department',
@@ -28,6 +28,22 @@ export const api = createApi({
     'Role',
     'Institution',
     'Experiments',
+    'ReleaseTypes',
+    'Releases',
+    'Calendar',
+    'Checklist',
+    'Issues',
+    'IssuesTags',
+    'IssuesFiles',
+    'IssueComments',
+    'Notifications',
+    'Templates',
+    'Skills',
+    'Objects',
+    'Practices',
+    'Competences',
+    'CompetenceAreas',
+    'Areas',
   ], // <--- add tagTypes
   endpoints: () => ({}), // <--- add endpoints
 });

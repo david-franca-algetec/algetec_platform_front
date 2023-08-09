@@ -17,6 +17,19 @@ export interface RegisterResponse {
   id: number;
 }
 
+export interface ICaptchaResponse {
+  success: boolean;
+  challenge_ts: string; // timestamp of the challenge load
+  hostname: string; // the hostname of the site where the reCAPTCHA was solved
+  'error-codes': number[]; // optional
+}
+
+export interface ICaptchaRequest {
+  secret: string; // Required. The shared key between your site and reCAPTCHA.
+  response: string; // Required. The user response token provided by the reCAPTCHA client-side integration on your site.
+  remoteip?: string; // Optional. The user's IP address.
+}
+
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<UserResponse, LoginRequest>({
@@ -42,11 +55,14 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    captchaVerify: build.mutation<ICaptchaResponse, ICaptchaRequest>({
+      query: (body) => ({
+        url: `https://www.google.com/recaptcha/api/siteverify`,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi;
-
-export const {
-  endpoints: { login: loginEndpoint, register: registerEndpoint, logout: logoutEndpoint },
-} = authApi;
+export const { useLoginMutation, useLogoutMutation } = authApi;

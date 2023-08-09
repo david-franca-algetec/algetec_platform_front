@@ -1,274 +1,215 @@
-import { useEffect, useMemo, useState } from 'react';
-
-import { DashboardComponent, Flex, Grid, Inline, Stack, Title } from '../../components';
-import { Card } from '../../components/Card';
-import { Chart } from '../../components/Chart';
-import { Select } from '../../components/Select';
-import { User } from '../../models';
+/* eslint-disable no-nested-ternary */
+import { CalendarOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Col, Row, Select } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
+import { orderBy } from 'lodash';
+import { useEffect, useMemo } from 'react';
+import { createSearchParams, useLocation, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../config/hooks';
+import { selectCurrentUser } from '../../config/reducers/authSlice';
+import {
+  changeTabKey,
+  setDay,
+  setDemandModeTags,
+  setDemandModeUsers,
+  setUserModeUsers,
+} from '../../config/reducers/calendarSlice';
+import { setSelect1, setSelect2, setSelect3 } from '../../config/reducers/dashboardSlice';
 import { IDemand } from '../../models/demands.model';
-import { useGetDemandsQuery } from '../../services/demands.service';
+import { useGetAllCalendarQuery, useGetCalendarForUserQuery } from '../../services/calendar.service';
+import { useGetDemandsQuery, useGetDemandsTagsQuery } from '../../services/demands.service';
 import { useGetUsersQuery } from '../../services/user.service';
-import { Text } from './styles';
-
-type SelectOption = {
-  label: string;
-  value: string;
-};
+import { CalendarDashboard } from './calendar';
+import { ChartsDashboard } from './charts';
 
 export function Dashboard() {
-  const [select, setSelect] = useState('issues');
+  const { search } = useLocation();
+  const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const { select1, select2, select3 } = useAppSelector((state) => state.dashboard);
+  const { demandModeTags, demandModeUsers, tabKey, userModeUsers } = useAppSelector((state) => state.calendar);
+
   const { data: demandsData } = useGetDemandsQuery();
-  const { data: usersData } = useGetUsersQuery();
+  const { data: usersData, isLoading: usersLoading, refetch: usersRefetch } = useGetUsersQuery();
 
-  const [users, setUsers] = useState<User[]>([]);
-  const [issues, setIssues] = useState<IDemand[]>([]);
+  const {
+    data: calendarForUser,
+    isSuccess,
+    refetch: forUsersRefetch,
+    isUninitialized: forUsersIsUninitialized,
+    isLoading: forUsersIsLoading,
+  } = useGetCalendarForUserQuery(userModeUsers, {
+    skip: userModeUsers.length === 0,
+  });
 
-  const [items1, setItems1] = useState<SelectOption[]>([]);
-  const [items2, setItems2] = useState<SelectOption[]>([]);
+  const {
+    data: allCalendar,
+    refetch: allCalendarRefetch,
+    isLoading: allCalendarIsLoading,
+  } = useGetAllCalendarQuery({
+    userId: demandModeUsers,
+    tags: demandModeTags.map((tag) => parseInt(tag, 10)),
+  });
 
-  const [select1, setSelect1] = useState<string | undefined>(undefined);
-  const [select2, setSelect2] = useState<string | undefined>(undefined);
+  const { data: tagsData, isLoading: tagsLoading, refetch: tagsRefetch } = useGetDemandsTagsQuery();
 
-  const selectItems: SelectOption[] = useMemo(
-    () => [
-      {
-        label: 'Entregas',
-        value: 'issues',
-      },
-      {
-        label: 'Usuários',
-        value: 'users',
-      },
-      {
-        label: 'Equipes',
-        value: 'teams',
-      },
-    ],
-    [],
-  );
+  const users = useMemo(() => orderBy(usersData, 'name') || [], [usersData]);
+  const calendar = useMemo(() => allCalendar || [], [allCalendar]);
+  const demands = useMemo<IDemand[]>(() => (demandsData ? orderBy(demandsData, 'experiment_id') : []), [demandsData]);
+  const tags = useMemo(() => orderBy(tagsData, 'name') || [], [tagsData]);
+  const forUser = useMemo(() => (calendarForUser && isSuccess ? calendarForUser : []), [calendarForUser]);
 
-  const teamsItems: SelectOption[] = useMemo(
-    () => [
-      {
-        label: 'Todas as Equipes',
-        value: 'all',
-      },
-      {
-        label: 'Roteirização',
-        value: 'Roteirização',
-      },
-      {
-        label: 'Modelos',
-        value: 'Modelos',
-      },
-      {
-        label: 'Programação',
-        value: 'Programação',
-      },
-      {
-        label: 'Testes',
-        value: 'Testes',
-      },
-      {
-        label: 'UALAB',
-        value: 'UALAB',
-      },
-    ],
-    [],
-  );
-  const generateNumberArray = (length: number) =>
-    Array(length)
-      .fill(0)
-      .map(() => Math.floor(Math.random() * 100));
-
-  const series = useMemo(() => {
-    const seriesRaw = [];
-
-    if (select === 'issues') {
-      seriesRaw.length = 0;
-      seriesRaw.push(
-        {
-          name: 'Ideal',
-          data: [100, 80, 60, 40, 20],
-        },
-        ...issues.map((issue) => ({
-          name: issue.experiments.name,
-          data: generateNumberArray(5),
-        })),
-      );
+  const refetch = () => {
+    allCalendarRefetch();
+    usersRefetch();
+    if (!forUsersIsUninitialized) {
+      forUsersRefetch();
     }
-    if (select === 'users') {
-      seriesRaw.length = 0;
-      seriesRaw.push(
-        {
-          name: 'Ideal',
-          data: [100, 80, 60, 40, 20],
-        },
-        ...users.map((user) => ({
-          name: user.name,
-          data: generateNumberArray(5),
-        })),
-      );
-    }
-    if (select === 'teams') {
-      seriesRaw.length = 0;
-      seriesRaw.push(
-        {
-          name: 'Ideal',
-          data: [100, 80, 60, 40, 20],
-        },
-        ...teamsItems.slice(1).map((team) => ({
-          name: team.label,
-          data: generateNumberArray(5),
-        })),
-      );
-    }
-    if (select1 !== 'none' && select !== 'issues') {
-      const filteredSeries = seriesRaw.filter((serie) => serie.name === select1);
-      seriesRaw.length = 0;
-      seriesRaw.push(
-        {
-          name: 'Ideal',
-          data: [100, 80, 60, 40, 20],
-        },
-        ...filteredSeries,
-      );
-    }
-    return seriesRaw;
-  }, [select, select1, issues, users, teamsItems]);
+    tagsRefetch();
+  };
+
+  const onTabChange = (key: string) => {
+    dispatch(changeTabKey({ tabKey: key }));
+  };
+
+  const onDemandUserChange = (users: number[]) => {
+    dispatch(setDemandModeUsers({ demandModeUsers: users }));
+    dispatch(setUserModeUsers({ userModeUsers: users }));
+  };
+
+  const onDemandTagsChange = (tags: string[]) => {
+    dispatch(setDemandModeTags({ demandModeTags: tags }));
+  };
+
+  const onDayChange = (day: Dayjs) => {
+    dispatch(setDay({ day: day.toISOString(), type: tabKey }));
+  };
+
+  const onSelect1Change = (value: string) => {
+    dispatch(setSelect1(value || 'demands'));
+  };
+
+  const onSelect2Change = (value: string) => {
+    dispatch(setSelect2(value));
+  };
+
+  const onSelect3Change = (value: string) => {
+    dispatch(setSelect3(value));
+  };
 
   useEffect(() => {
-    if (demandsData) {
-      setIssues(demandsData);
+    const demandTags = demandModeTags.map((value) => value.toString());
+    const demandUsers = demandModeUsers.map((value) => value.toString());
+    const users = userModeUsers.map((value) => value.toString());
+    const setParams = createSearchParams({ demandTags, demandUsers, users, select1, tabKey });
+
+    if (select2) {
+      setParams.append('select2', select2);
     }
-  }, [demandsData]);
+
+    if (select3) {
+      setParams.append('select3', select3);
+    }
+
+    setSearchParams(setParams);
+  }, [select1, select2, select3, demandModeTags, demandModeUsers, userModeUsers, tabKey]);
 
   useEffect(() => {
-    if (usersData) {
-      setUsers(usersData);
-    }
-  }, [usersData]);
+    if (search) {
+      const demandUsers: number[] = searchParams.getAll('demandUsers').map((value) => parseInt(value, 10));
+      const demandTags = searchParams.getAll('demandTags');
+      const key = searchParams.get('tabKey');
+      const select1Param = searchParams.get('select1');
+      const select2Param = searchParams.get('select2');
+      const select3Param = searchParams.get('select3');
 
-  useEffect(() => {
-    if (select === 'issues') {
-      setItems1([
-        {
-          label: 'Todas as Entregas',
-          value: 'all',
-        },
-        ...issues.map((issue) => ({
-          label: issue.experiments.name,
-          value: issue.experiments.name,
-        })),
-      ]);
-      setItems2(teamsItems);
-      setSelect1('all');
-      setSelect2('all');
+      if (select1Param) {
+        onSelect1Change(select1Param);
+      }
+      if (select2Param) {
+        onSelect2Change(select2Param);
+      }
+      if (select3Param) {
+        onSelect3Change(select3Param);
+      }
+      if (key === 'users' || key === 'demands') {
+        onTabChange(key);
+      }
+      if (demandTags && demandTags.length > 0) {
+        onDemandTagsChange(demandTags);
+      }
+      if (demandUsers && demandUsers.length > 0) {
+        onDemandUserChange(demandUsers);
+      }
     }
-    if (select === 'users') {
-      setSelect1('none');
-      setSelect2('all');
-      setItems1([
-        {
-          label: 'Selecione um Usuário',
-          value: 'none',
-        },
-        ...users.map((user) => ({
-          label: user.name,
-          value: user.name,
-        })),
-      ]);
-      setItems2([
-        {
-          label: 'Todas as Entregas',
-          value: 'all',
-        },
-        ...issues.map((issue) => ({
-          label: issue.experiments.name,
-          value: issue.experiments.name,
-        })),
-      ]);
-    }
-    if (select === 'teams') {
-      setSelect1('none');
-      setSelect2('all');
-      const teams = [];
-      teams.push(
-        {
-          label: 'Selecione uma Equipe',
-          value: 'none',
-        },
-        ...teamsItems.slice(1),
-      );
-      setItems1(teams);
-      setItems2([
-        {
-          label: 'Todas as Entregas',
-          value: 'all',
-        },
-        ...issues.map((issue) => ({
-          label: issue.experiments.name,
-          value: issue.experiments.name,
-        })),
-      ]);
-    }
-  }, [select, issues, users, teamsItems]);
+  }, [search]);
 
   return (
-    <DashboardComponent>
-      <Stack
-        css={{
-          width: '100%',
-        }}
-      >
-        <Flex>
-          <Text css={{ marginLeft: 0 }} size="large">
-            Velocidade de Produção
-          </Text>
-        </Flex>
-        <Inline css={{ gap: '$md', marginBottom: '$md' }}>
-          <Select items={selectItems} value={select} onValueChange={setSelect} />
-          <Select items={items1} value={select1} onValueChange={setSelect1} />
-          {select1 !== 'none' && <Select items={items2} value={select2} onValueChange={setSelect2} />}
-        </Inline>
-        <Grid
-          css={{
-            gridTemplateColumns: '4fr, 1fr',
-            gap: '$md',
-            width: '100%',
-            height: '100%',
-            alignItems: 'center',
-          }}
+    <Row gutter={[16, 16]}>
+      <Col lg={9} md={12} sm={12} xs={24}>
+        <Select
+          allowClear
+          showSearch
+          mode="multiple"
+          optionFilterProp="label"
+          options={users.map((user) => ({ value: user.id, label: user.name }))}
+          placeholder="Usuários"
+          loading={!(currentUser && !usersLoading)}
+          value={currentUser && !usersLoading ? demandModeUsers : []}
+          onChange={onDemandUserChange}
+          maxTagCount="responsive"
+          className="w-full"
+        />
+      </Col>
+      <Col lg={9} md={12} sm={12} xs={24}>
+        <Select
+          className="w-full"
+          options={tags.map((tag) => ({ value: tag.id.toString(), label: tag.name }))}
+          placeholder="Tags"
+          allowClear
+          mode="tags"
+          loading={tagsLoading}
+          value={!tagsLoading ? demandModeTags : []}
+          onChange={onDemandTagsChange}
+          maxTagCount="responsive"
+        />
+      </Col>
+      <Col lg={3} md={12} sm={12} xs={12}>
+        <Button block icon={<CalendarOutlined />} onClick={() => onDayChange(dayjs())}>
+          Hoje
+        </Button>
+      </Col>
+      <Col lg={3} md={12} sm={12} xs={12}>
+        <Button
+          block
+          icon={<ReloadOutlined />}
+          loading={usersLoading || allCalendarIsLoading || tagsLoading || forUsersIsLoading}
+          onClick={refetch}
         >
-          <Card
-            css={{
-              gridArea: '1 / 1 / 2 / 2',
-              width: 'auto',
-              height: '100%',
-            }}
-          >
-            <Chart
-              text="Pontos"
-              series={series}
-              categories={['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta']}
-              dashArray={[5]}
-            />
-          </Card>
-
-          <Card
-            css={{
-              gridArea: '1 / 2 / 2 / 3',
-              width: 'auto',
-              height: '100%',
-              alignItems: 'start',
-              justifyContent: 'start',
-            }}
-          >
-            <Text css={{ marginLeft: 0 }}>Velocidade Média</Text>
-            <Title>{Math.floor(Math.random() * 100)} pt / dia</Title>
-          </Card>
-        </Grid>
-      </Stack>
-    </DashboardComponent>
+          Atualizar
+        </Button>
+      </Col>
+      <Col span={24}>
+        <CalendarDashboard
+          mode={{ onDemandTagsChange, onDemandUserChange, onTabChange, onDayChange }}
+          calendarProps={{
+            calendar,
+            users,
+            calendarForUser: forUser,
+          }}
+        />
+      </Col>
+      <Col span={24}>
+        <ChartsDashboard
+          calendar={calendar}
+          demands={demands}
+          users={users}
+          onSelect1Change={onSelect1Change}
+          onSelect2Change={onSelect2Change}
+          onSelect3Change={onSelect3Change}
+        />
+      </Col>
+    </Row>
   );
 }

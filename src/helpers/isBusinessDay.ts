@@ -1,59 +1,75 @@
-/* eslint-disable no-plusplus */
-import Holydays from 'date-holidays';
-import moment from 'moment';
+import dayjs, { Dayjs } from 'dayjs';
 
-const hd = new Holydays('BR', 'ba');
+import { isHoliday } from './getHolidays';
 
-hd.setHoliday('12-08', {
-  name: 'Dia de Nossa Senhora da Conceição',
-  type: 'public',
-});
+export const getHoliday = (date: Dayjs) => isHoliday(date);
 
-hd.setHoliday('06-24', {
-  name: 'Dia de São João',
-  type: 'public',
-});
-
-export const isHoliday = (date: Date) => {
-  const itsHoliday = hd.isHoliday(date);
-  return itsHoliday;
-};
-
-export const isWeekend = (date: Date) => {
-  const day = date.getDay();
+export const isWeekend = (date: Dayjs) => {
+  const day = date.day();
   return day === 0 || day === 6;
 };
 
-export const isBusinessDay = (date: Date) => !isHoliday(date) && !isWeekend(date);
+export const isBusinessDay = (date: Dayjs) => !isHoliday(date) && !isWeekend(date) && dayjs(date).isValid();
 
-export const allHolydaysByYear = (year: number) => hd.getHolidays(year).map((h) => new Date(h.date));
+export const businessDaysAdd = (date: Dayjs, number: number) => {
+  const numericDirection = number < 0 ? -1 : 1;
+  let currentDay = date.clone();
+  let daysRemaining = Math.abs(number);
 
-export const allWeekends = (year: number) => {
-  const weekends = [];
-  const start = moment(`${year}-01-01`);
-  const end = moment(`${year}-12-31`);
-  const days = end.diff(start, 'days');
+  while (daysRemaining > 0) {
+    currentDay = currentDay.add(numericDirection, 'd');
 
-  for (let i = 0; i < days; i++) {
-    const day = start.clone().add(i, 'days');
-    if (day.day() === 0 || day.day() === 6) {
-      weekends.push(day.toDate());
-    }
+    if (isBusinessDay(currentDay)) daysRemaining -= 1;
   }
-
-  return weekends;
+  return currentDay;
 };
 
-export const numberOfBusinessDays = (startDate: Date, endDate: Date) => {
-  let count = 0;
-  let currentDate = moment(startDate).toDate();
+export const businessDaysSubtract = (date: Dayjs, number: number) => {
+  let currentDay = date.clone();
 
-  while (currentDate <= endDate) {
-    if (isBusinessDay(currentDate)) {
-      count++;
-    }
-    currentDate = moment(currentDate).add(1, 'days').toDate();
+  currentDay = businessDaysAdd(currentDay, number * -1);
+
+  return currentDay;
+};
+
+export const businessDiffHours = (started: Dayjs | string, finished: Dayjs | string) => {
+  const day1 = dayjs(started).clone();
+  const day2 = dayjs(finished).clone();
+
+  const isPositiveDiff = day1 >= day2;
+  let start = isPositiveDiff ? day2 : day1;
+  const end = isPositiveDiff ? day1 : day2;
+
+  let hoursBetween = 0;
+
+  if (start.isSame(end)) return hoursBetween;
+
+  while (start < end) {
+    if (isBusinessDay(start)) hoursBetween += 1;
+
+    start = start.add(1, 'h');
   }
 
-  return count;
+  return isPositiveDiff ? hoursBetween : -hoursBetween;
+};
+
+export const numberOfBusinessDays = (startDate: Date | undefined, endDate: Date | undefined) => {
+  if (startDate && endDate) {
+    const fullHours = businessDiffHours(dayjs(endDate), dayjs(startDate));
+    const hours = fullHours % 24;
+    const days = Math.floor(fullHours / 24);
+
+    if (days === 0) {
+      return {
+        hours: fullHours,
+        message: `${hours} horas`,
+      };
+    }
+
+    return {
+      hours: fullHours,
+      message: hours === 0 ? `${days} dias` : `${days} dias e ${hours} horas`,
+    };
+  }
+  return undefined;
 };

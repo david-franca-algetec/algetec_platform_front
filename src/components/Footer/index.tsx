@@ -1,28 +1,22 @@
+import { Image, Layout, Space, Typography } from 'antd';
+
 import logoBranca from '../../assets/logo-branca.png';
-import { Box, Copyright, FooterContainer, Image, Info, Section } from './style';
+import { useAppSelector } from '../../config/hooks';
+
+const { Footer: AFooter } = Layout;
+const { Text } = Typography;
 
 export function Footer() {
+  const { isDarkMode } = useAppSelector((state) => state.auth);
   return (
-    <FooterContainer>
-      <Section>
-        <Info>
-          <Image src={logoBranca} alt="Logo Branca" />
+    <AFooter style={{ background: isDarkMode ? '#000a14' : '#556F83' }}>
+      <Space direction="vertical" align="center" style={{ width: '100%' }}>
+        <Image preview={false} style={{ maxWidth: 150 }} src={logoBranca} alt="Logo Branca" />
 
-          <Box css={{ marginBottom: '10px' }}>
-            <p>ALGETEC - Soluções para Ensino e Aprendizagem</p>
-            <p>Rua Baixão, 578, Galpões 3, 4 e 5</p>
-            <p>Luis Anselmo, Salvador-BA, Brasil</p>
-            <p>CEP. 40.260-215</p>
-          </Box>
-          <div className="contact">
-            <p>+55 (71) 3272-3504</p>
-            <p>contato@algetec.com.br</p>
-          </div>
-        </Info>
-      </Section>
-      <Copyright>
-        <p>© COPYRIGHT 2022. Todos os direitos reservados. Desenvolvido por Algetec+</p>
-      </Copyright>
-    </FooterContainer>
+        <Text style={{ alignItems: 'center', color: '#FFF' }}>
+          &copy; {new Date().getFullYear()}. Todos os direitos reservados. Desenvolvido por Algetec+
+        </Text>
+      </Space>
+    </AFooter>
   );
 }

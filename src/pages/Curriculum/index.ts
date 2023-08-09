@@ -1,0 +1,1 @@
+export { CurriculumList } from './list';

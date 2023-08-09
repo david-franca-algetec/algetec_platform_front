@@ -1,18 +1,21 @@
-import { useRouteError } from 'react-router-dom';
-
-import pageNotFound from '../../assets/page_not_found.svg';
-import { ErrorContainer } from './styles';
+import { Button, Result } from 'antd';
+import { Link, useRouteError } from 'react-router-dom';
 
 export function ErrorPage() {
   const error = useRouteError();
 
   if (error) {
     return (
-      <ErrorContainer>
-        <h1>Oops!</h1>
-        <p>Sorry, an unexpected error has occurred.</p>
-        <img src={pageNotFound} alt="Page Not Found" />
-      </ErrorContainer>
+      <Result
+        status="404"
+        title="404"
+        subTitle="Desculpe, a página que você procura não existe ou foi removida."
+        extra={
+          <Link to="/" replace>
+            <Button type="primary">Voltar</Button>
+          </Link>
+        }
+      />
     );
   }
   return null;

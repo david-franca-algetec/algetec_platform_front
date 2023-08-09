@@ -1,12 +1,11 @@
+import { blackA, mauve } from '@radix-ui/colors';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 
 import { styled } from '../../config/styles/stitches.config';
 
 export const ScrollAreaContainer = styled(ScrollAreaPrimitive.Root, {
   width: '100%',
-  height: 400,
-  maxHeight: 400,
-  borderRadius: '$sm',
+  borderRadius: 4,
   overflow: 'hidden',
 });
 
@@ -25,9 +24,9 @@ export const ScrollAreaScrollbar = styled(ScrollAreaPrimitive.Scrollbar, {
   // disable browser handling of all panning and zooming gestures on touch devices
   touchAction: 'none',
   padding: 2,
-  background: '$blackA6',
-  transition: '$default',
-  '&:hover': { background: '$blackA8' },
+  background: blackA.blackA6,
+  transition: 'background 160ms ease-out',
+  '&:hover': { background: blackA.blackA8 },
   '&[data-orientation="vertical"]': { width: SCROLLBAR_SIZE },
   '&[data-orientation="horizontal"]': {
     flexDirection: 'column',
@@ -37,7 +36,7 @@ export const ScrollAreaScrollbar = styled(ScrollAreaPrimitive.Scrollbar, {
 
 export const ScrollAreaThumb = styled(ScrollAreaPrimitive.Thumb, {
   flex: 1,
-  background: '$mauve10',
+  background: mauve.mauve10,
   borderRadius: SCROLLBAR_SIZE,
   // increase target size for touch devices https://www.w3.org/WAI/WCAG21/Understanding/target-size.html
   position: 'relative',
@@ -55,5 +54,5 @@ export const ScrollAreaThumb = styled(ScrollAreaPrimitive.Thumb, {
 });
 
 export const ScrollAreaCorner = styled(ScrollAreaPrimitive.Corner, {
-  background: '$blackA8',
+  background: blackA.blackA8,
 });

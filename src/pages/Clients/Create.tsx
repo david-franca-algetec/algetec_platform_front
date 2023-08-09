@@ -1,50 +1,79 @@
-import { useFormik } from 'formik';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+// noinspection JSIgnoredPromiseFromCall
 
-import { Button, Flex } from '../../components';
-import { Fieldset, Input, Label } from '../../components/Dialog';
+import { Form, Input, message, Modal } from 'antd';
+import { useEffect } from 'react';
+import { handleError } from '../../helpers';
+
 import { InstitutionCreate } from '../../models/institution.model';
 import { useCreateInstitutionMutation } from '../../services/institution.service';
+import { CreateProps } from '../types';
 
-interface CreateInstitutionProps {
-  onClose: (open: boolean) => void;
-}
+export function CreateClient({ onClose, open }: CreateProps) {
+  const [createInstitution, { isLoading, isSuccess, isError, error }] = useCreateInstitutionMutation();
 
-export function CreateInstitution({ onClose }: CreateInstitutionProps) {
-  const [createInstitution, { isLoading, isSuccess, isError }] = useCreateInstitutionMutation();
+  const [toast, contextHolder] = message.useMessage();
   const initialValues: InstitutionCreate = {
     name: '',
   };
-  const formik = useFormik({
-    initialValues,
-    onSubmit: (values) => {
-      createInstitution(values);
-    },
-  });
+
+  const [form] = Form.useForm<InstitutionCreate>();
+
+  const onFinish = async () => {
+    const { name } = await form.validateFields();
+    createInstitution({ name });
+  };
+
+  const onCancel = () => {
+    form.resetFields();
+    onClose();
+  };
 
   useEffect(() => {
-    if (isError) {
-      toast.error('Erro ao criar instituição');
+    if (isError && error && 'data' in error) {
+      toast.error(handleError(error));
     }
     if (isSuccess) {
-      formik.resetForm();
+      form.resetFields();
       toast.success('Instituição criada com sucesso');
-      onClose(true);
+      onClose();
     }
   }, [isError, isSuccess]);
 
   return (
-    <form noValidate onSubmit={formik.handleSubmit}>
-      <Fieldset>
-        <Label htmlFor="name">Nome</Label>
-        <Input id="name" name="name" type="text" onChange={formik.handleChange} value={formik.values.name} />
-      </Fieldset>
-      <Flex css={{ marginTop: 25, justifyContent: 'flex-end' }}>
-        <Button color="green" isLoading={isLoading}>
-          Salvar
-        </Button>
-      </Flex>
-    </form>
+    <Modal
+      title="Adicionar Instituição"
+      open={open}
+      okText="Salvar"
+      cancelText="Cancelar"
+      onCancel={onCancel}
+      onOk={onFinish}
+      okButtonProps={{
+        loading: isLoading,
+      }}
+      maskStyle={{
+        backdropFilter: 'blur(8px)',
+      }}
+    >
+      {contextHolder}
+      <Form form={form} layout="vertical" initialValues={initialValues}>
+        <Form.Item
+          name="name"
+          label="Nome"
+          rules={[
+            {
+              required: true,
+              message: 'Insira o nome da instituição',
+            },
+            {
+              min: 3,
+              max: 20,
+              message: 'Insira um nome entre 3 e 20 caracteres',
+            },
+          ]}
+        >
+          <Input type="text" />
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 }

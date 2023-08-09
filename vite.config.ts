@@ -11,4 +11,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
 });

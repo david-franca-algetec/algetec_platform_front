@@ -26,25 +26,3 @@ export type Asset = {
   developers: Array<User>;
   creator: User;
 };
-
-export type AssetCreate = Pick<
-  Asset,
-  | 'name'
-  | 'description'
-  | 'version'
-  | 'image'
-  | 'file'
-  | 'variant'
-  | 'content_type_id'
-  | 'created_by_id'
-  | 'developers'
-  | 'assetTags'
-  | 'experiments'
-  | 'isClean'
-  | 'isRegistry'
->;
-
-export type AssetUpdate = Omit<AssetCreate, 'created_by_id'> & {
-  id: number;
-  modified_by_id: number;
-};

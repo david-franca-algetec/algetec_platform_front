@@ -6,7 +6,7 @@ export type Experiment = {
   original_experiment_id?: number | null;
   name: string;
   description: string;
-  image: string;
+  image?: string;
   web: boolean;
   pt: boolean;
   en: boolean;
@@ -17,4 +17,5 @@ export type Experiment = {
   created_at: string;
   updated_at: string;
   test: string;
+  approved: boolean;
 };

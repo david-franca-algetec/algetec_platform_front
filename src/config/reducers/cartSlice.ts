@@ -74,17 +74,5 @@ const cartSlice = createSlice({
   },
 });
 
-const { reducer, actions } = cartSlice;
-
-export const {
-  addToDemandsCart,
-  addManyToDemandsCart,
-  removeFromDemandsCart,
-  clearDemandsCart,
-  addToUsersCart,
-  addManyToUsersCart,
-  removeFromUsersCart,
-  clearUsersCart,
-} = actions;
-
+const { reducer } = cartSlice;
 export default reducer;

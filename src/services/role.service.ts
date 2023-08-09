@@ -33,4 +33,4 @@ export const roleApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetRolesQuery, useCreateRoleMutation, useUpdateRoleMutation, useDeleteRoleMutation } = roleApi;
+export const { useGetRolesQuery } = roleApi;
