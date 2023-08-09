@@ -127,9 +127,7 @@ export function IssueTrackerShow() {
                   <Descriptions.Item label="Autor">{issueData?.creator.name || '-'}</Descriptions.Item>
                   <Descriptions.Item label="Responsável">{issueData?.responsible.name || '-'}</Descriptions.Item>
                   <Descriptions.Item label="Ambiente">
-                    {issueData?.issueTags.map((tag) => (
-                      <TagField value={tag.name} color={getUniqueColor(tag.name)} />
-                    ))}
+                    {issueData?.issueTags.map((tag) => <TagField value={tag.name} color={getUniqueColor(tag.name)} />)}
                   </Descriptions.Item>
                   <Descriptions.Item label="Data de Criação">
                     <DateField value={issueData?.created_at} format="DD/MM/YYYY HH:mm" />

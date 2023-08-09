@@ -62,9 +62,7 @@ export function DemandsTable({ dataSource, loading }: DemandsTableProps) {
       filterSearch: true,
       render: (tags: ExperimentDemand['demandTags']) => (
         <Space size="middle" wrap style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
-          {tags?.map((tag) => (
-            <TagField value={tag.name} color={getUniqueColor(tag.name)} key={nanoid()} />
-          ))}
+          {tags?.map((tag) => <TagField value={tag.name} color={getUniqueColor(tag.name)} key={nanoid()} />)}
         </Space>
       ),
     },
