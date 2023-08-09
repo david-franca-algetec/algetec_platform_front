@@ -87,7 +87,7 @@ function SidebarContent({ isDarkMode }: SidebarContentProps) {
       children,
       label,
       type,
-    } as MenuItem);
+    }) as MenuItem;
 
   const items: MenuItem[] = [
     getItem('Dashboard', 'dashboard', <HomeOutlined />),
