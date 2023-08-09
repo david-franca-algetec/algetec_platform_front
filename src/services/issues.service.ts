@@ -58,7 +58,7 @@ export const issuesApi = api.injectEndpoints({
     }),
     createIssues: build.mutation<void, FormData>({
       query: (body) => ({
-        url: `issues/massCreate`,
+        url: 'issues/massCreate',
         method: 'POST',
         body,
       }),

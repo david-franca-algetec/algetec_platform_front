@@ -31,7 +31,7 @@ export const templatesApi = api.injectEndpoints({
     }),
     createTemplate: build.mutation<void, TemplateCreate>({
       query: (body) => ({
-        url: `templates/create`,
+        url: 'templates/create',
         body,
         method: 'POST',
       }),
