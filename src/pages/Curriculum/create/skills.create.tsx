@@ -139,7 +139,7 @@ export function SkillsCreate({ onClose, isOpen, id }: CurriculumCreateProps) {
   const initialItems: TabsProps['items'] = [
     {
       key: nanoid(),
-      label: "Habilidade 1",
+      label: 'Habilidade 1',
       children: <SkillForm />,
     },
   ];

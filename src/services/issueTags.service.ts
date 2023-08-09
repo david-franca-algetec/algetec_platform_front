@@ -12,7 +12,7 @@ export const issuesTagsApi = api.injectEndpoints({
       invalidatesTags: ['IssuesTags'],
     }),
     createIssuesTags: build.mutation({
-      query: () => "issueTags/create",
+      query: () => 'issueTags/create',
       invalidatesTags: ['IssuesTags'],
     }),
   }),

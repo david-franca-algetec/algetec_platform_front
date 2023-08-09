@@ -12,7 +12,7 @@ export const issuesFilesApi = api.injectEndpoints({
       invalidatesTags: ['IssuesFiles'],
     }),
     createIssuesFiles: build.mutation({
-      query: () => "issuesFiles/create",
+      query: () => 'issuesFiles/create',
       invalidatesTags: ['IssuesFiles'],
     }),
     deleteIssuesFiles: build.mutation<void, number>({
