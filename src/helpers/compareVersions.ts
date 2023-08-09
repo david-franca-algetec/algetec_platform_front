@@ -7,10 +7,9 @@ export function compareVersions(v1: string, v2: string) {
   const v2Array = v2.split('.').map(Number);
   const length = Math.max(v1Array.length, v2Array.length);
 
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < length; i++) {
-    const v1Part = v1Array[i] || 0;
-    const v2Part = v2Array[i] || 0;
+  for (let i = 0; i < length; i += 1) {
+    const v1Part = v1Array[i] ?? 0;
+    const v2Part = v2Array[i] ?? 0;
 
     if (v1Part > v2Part) {
       return 1;

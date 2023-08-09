@@ -27,7 +27,7 @@ export function Edit({ refetch, children, resource, title, name, isShow }: EditP
                 type="text"
                 onClick={() => navigate(-1)}
               >
-                {name || 'Editar'}
+                {name ?? 'Editar'}
               </Button>
             </div>
             <Space>

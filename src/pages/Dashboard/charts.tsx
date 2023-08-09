@@ -343,6 +343,7 @@ export function ChartsDashboard({
         </Col>
         {/* eslint-disable-next-line no-nested-ternary */}
         {select1 === 'demands' && select2 !== 'all' && select3 === 'all' ? (
+          // If select1 is 'demands', select2 is not 'all', and select3 is 'all'
           <Col span={24}>
             <Card
               style={{
@@ -352,7 +353,9 @@ export function ChartsDashboard({
               <RadialChart series={radial} />
             </Card>
           </Col>
-        ) : select1 === 'demands' && select2 === 'all' && select3 === 'all' ? (
+        ) : null}
+        {select1 === 'demands' && select2 === 'all' && select3 === 'all' ? (
+          // If select1 is 'demands', select2 is 'all', and select3 is 'all'
           <Col span={24}>
             <List
               loading={!demands}
@@ -364,18 +367,20 @@ export function ChartsDashboard({
               }}
               dataSource={dataSource}
               renderItem={(item) => (
+                // Render each item in the dataSource as a List.Item
                 <List.Item key={nanoid()} style={{ padding: 0 }}>
                   <Card hoverable onClick={() => onSelect2Change(item.id.toString())}>
                     <Statistic
                       title={
                         <Typography.Text ellipsis>{`${item.experiment_id} - ${item.experiments.name}`}</Typography.Text>
                       }
-                      value={handleStringDate(item.finished_at, 'DD/MM/YY') || ''}
+                      value={handleStringDate(item.finished_at, 'DD/MM/YY') ?? ''}
                       precision={2}
                       valueStyle={{
                         color: !isDemandLate(item) ? grass.grass9 : tomato.tomato9,
                       }}
                       prefix={
+                        // Set the prefix icon based on a condition
                         !isDemandLate(item) ? (
                           <LikeTwoTone twoToneColor={grass.grass9} />
                         ) : (
@@ -389,6 +394,7 @@ export function ChartsDashboard({
             />
           </Col>
         ) : (
+          // If none of the above conditions are met
           <>
             <Col span={18}>
               <Card className="h-full">

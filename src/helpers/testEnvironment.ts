@@ -1,4 +1,4 @@
-const isLocal = window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1');
+const isLocal = window.location.href.includes('localhost') ?? window.location.href.includes('127.0.0.1');
 
 const isDev = window.location.href.includes('-dev');
 
