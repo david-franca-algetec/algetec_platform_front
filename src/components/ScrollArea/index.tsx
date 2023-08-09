@@ -13,10 +13,10 @@ import {
 } from './styles';
 
 interface ScrollAreaProps extends PropsWithChildren {
-  height?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Height | undefined;
-  width?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Width | undefined;
-  maxHeight?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxHeight | undefined;
-  maxWidth?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxWidth | undefined;
+  height?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Height;
+  width?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.Width;
+  maxHeight?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxHeight;
+  maxWidth?: Globals | Index | '$sm' | '$md' | '$lg' | '$xl' | '$xxl' | Property.MaxWidth;
 }
 
 export function ScrollArea({ children, height, width, maxWidth, maxHeight }: ScrollAreaProps) {

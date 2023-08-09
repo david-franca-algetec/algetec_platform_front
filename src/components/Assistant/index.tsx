@@ -86,7 +86,7 @@ interface AssistantProps {
 export function Assistant({ onFinish, edit, id }: AssistantProps) {
   const dispatch = useAppDispatch();
   const assistantSlice = useAppSelector((state) => state.assistant);
-  const [daysCount, setDaysCount] = useState(assistantSlice.daysCount || 30);
+  const [daysCount, setDaysCount] = useState(assistantSlice.daysCount ?? 30);
   const [dateTime, setDateTime] = useState<Dayjs>();
   const [ualabDeveloper, setUalabDeveloper] = useState<number>();
   const [codingDeveloper, setCodingDeveloper] = useState<number>();
@@ -97,12 +97,12 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
 
   const [result, setResult] = useState<Result>({});
 
-  const { data: ualabScheduleData } = useGetByUserQuery(ualabDeveloper || skipToken);
-  const { data: codingScheduleData } = useGetByUserQuery(codingDeveloper || skipToken);
-  const { data: modelingScheduleData } = useGetByUserQuery(modelingDeveloper || skipToken);
-  const { data: testingScheduleData } = useGetByUserQuery(testingDeveloper || skipToken);
-  const { data: scriptingScheduleData } = useGetByUserQuery(scriptingDeveloper || skipToken);
-  const { data: designingScheduleData } = useGetByUserQuery(designingDeveloper || skipToken);
+  const { data: ualabScheduleData } = useGetByUserQuery(ualabDeveloper ?? skipToken);
+  const { data: codingScheduleData } = useGetByUserQuery(codingDeveloper ?? skipToken);
+  const { data: modelingScheduleData } = useGetByUserQuery(modelingDeveloper ?? skipToken);
+  const { data: testingScheduleData } = useGetByUserQuery(testingDeveloper ?? skipToken);
+  const { data: scriptingScheduleData } = useGetByUserQuery(scriptingDeveloper ?? skipToken);
+  const { data: designingScheduleData } = useGetByUserQuery(designingDeveloper ?? skipToken);
   const { data: usersData, isLoading: usersLoading } = useGetUsersQuery();
 
   const [form] = Form.useForm<AssistantValues>();
@@ -220,155 +220,157 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
 
   const handleFinish = (values: AssistantValues) => {
     const initialResult: Result = {};
-    if (dateTime && ualabDeveloper && ualabScheduleData) {
-      const schedule = ualabScheduleData.map((u) => new Schedule(u).toJson());
-      const rest = createSchedule(
-        values.ualab_range,
-        'Ualab',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.ualab_activity,
-      );
-      initialResult.ualab = {
-        ...rest,
-        developer: ualabDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
-    }
-    if (dateTime && codingDeveloper && codingScheduleData) {
-      const schedule = codingScheduleData.map((c) => new Schedule(c).toJson());
-      const rest = createSchedule(
-        values.coding_range,
-        'Coding',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.coding_activity,
-      );
-      initialResult.coding = {
-        ...rest,
-        developer: codingDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
-    }
-    if (dateTime && testingDeveloper && testingScheduleData) {
-      const schedule = testingScheduleData.map((t) => new Schedule(t).toJson());
-      const rest = createSchedule(
-        values.testing_range,
-        'Testing',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.testing_activity,
-      );
-      initialResult.testing = {
-        ...rest,
-        developer: testingDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
-    }
-    if (dateTime && scriptingDeveloper && scriptingScheduleData) {
-      const schedule = scriptingScheduleData.map((s) => new Schedule(s).toJson());
-      const rest = createSchedule(
-        values.scripting_range,
-        'Scripting',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.scripting_activity,
-      );
-      initialResult.scripting = {
-        ...rest,
-        developer: scriptingDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
-    }
-    if (dateTime && modelingDeveloper && modelingScheduleData) {
-      const schedule = modelingScheduleData.map((m) => new Schedule(m).toJson());
-      const rest = createSchedule(
-        values.modeling_range,
-        'Modeling',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.modeling_activity,
-      );
-      initialResult.modeling = {
-        ...rest,
-        developer: modelingDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
-    }
-    if (dateTime && designingDeveloper && designingScheduleData) {
-      const schedule = designingScheduleData.map((m) => new Schedule(m).toJson());
-      const rest = createSchedule(
-        values.designing_range,
-        'Designing',
-        {
-          dateTime,
-          ualab_range: values.ualab_range,
-          coding_range: values.coding_range,
-          modeling_range: values.modeling_range,
-          scripting_range: values.scripting_range,
-          testing_range: values.testing_range,
-          designing_range: values.designing_range,
-        },
-        schedule,
-        id,
-        values.designing_activity,
-      );
-      initialResult.designing = {
-        ...rest,
-        developer: designingDeveloper,
-        message:
-          numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message || '',
-      };
+    if (dateTime) {
+      if (ualabDeveloper && ualabScheduleData) {
+        const schedule = ualabScheduleData.map((u) => new Schedule(u).toJson());
+        const rest = createSchedule(
+          values.ualab_range,
+          'Ualab',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.ualab_activity,
+        );
+        initialResult.ualab = {
+          ...rest,
+          developer: ualabDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
+      if (codingDeveloper && codingScheduleData) {
+        const schedule = codingScheduleData.map((c) => new Schedule(c).toJson());
+        const rest = createSchedule(
+          values.coding_range,
+          'Coding',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.coding_activity,
+        );
+        initialResult.coding = {
+          ...rest,
+          developer: codingDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
+      if (testingDeveloper && testingScheduleData) {
+        const schedule = testingScheduleData.map((t) => new Schedule(t).toJson());
+        const rest = createSchedule(
+          values.testing_range,
+          'Testing',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.testing_activity,
+        );
+        initialResult.testing = {
+          ...rest,
+          developer: testingDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
+      if (scriptingDeveloper && scriptingScheduleData) {
+        const schedule = scriptingScheduleData.map((s) => new Schedule(s).toJson());
+        const rest = createSchedule(
+          values.scripting_range,
+          'Scripting',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.scripting_activity,
+        );
+        initialResult.scripting = {
+          ...rest,
+          developer: scriptingDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
+      if (modelingDeveloper && modelingScheduleData) {
+        const schedule = modelingScheduleData.map((m) => new Schedule(m).toJson());
+        const rest = createSchedule(
+          values.modeling_range,
+          'Modeling',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.modeling_activity,
+        );
+        initialResult.modeling = {
+          ...rest,
+          developer: modelingDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
+      if (designingDeveloper && designingScheduleData) {
+        const schedule = designingScheduleData.map((m) => new Schedule(m).toJson());
+        const rest = createSchedule(
+          values.designing_range,
+          'Designing',
+          {
+            dateTime,
+            ualab_range: values.ualab_range,
+            coding_range: values.coding_range,
+            modeling_range: values.modeling_range,
+            scripting_range: values.scripting_range,
+            testing_range: values.testing_range,
+            designing_range: values.designing_range,
+          },
+          schedule,
+          id,
+          values.designing_activity,
+        );
+        initialResult.designing = {
+          ...rest,
+          developer: designingDeveloper,
+          message:
+            numberOfBusinessDays(rest.schedule.startedAt.toDate(), rest.schedule.finishedAt.toDate())?.message ?? '',
+        };
+      }
     }
 
     dispatch(

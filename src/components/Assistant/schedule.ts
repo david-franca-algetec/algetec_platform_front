@@ -119,7 +119,7 @@ export function createSchedule(
       startedAt,
       finishedAt,
       type,
-      demand: currentDemandId || 0,
+      demand: currentDemandId ?? 0,
     },
     skips,
   };
