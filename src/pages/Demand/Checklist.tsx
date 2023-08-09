@@ -318,7 +318,7 @@ export function Checklist({ onSelect, onOpen, select }: IChecklistProps) {
   }, [checklistId]);
 
   useEffect(() => {
-    if ( select?.params && select.id) {
+    if (select?.params && select.id) {
       setDataSource(
         select.params.map((parameter, index) => ({
           name: parameter.name,

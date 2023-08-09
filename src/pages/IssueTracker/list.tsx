@@ -577,10 +577,10 @@ export function IssueTrackerList() {
         params.append('approved', 'false');
       }
     }
-    if ( creator?.length) {
+    if (creator?.length) {
       creator.forEach((el) => params.append('creator', el.toString(10)));
     }
-    if ( responsible?.length) {
+    if (responsible?.length) {
       responsible.forEach((el) => params.append('responsible', el.toString(10)));
     }
     if (experimentId) {
