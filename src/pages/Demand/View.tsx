@@ -120,7 +120,7 @@ export function DemandsView() {
           </Descriptions>
         </Col>
         <Col span={24}>
-          {demand && demand.issues.length ? (
+          { demand?.issues.length ? (
             <List
               grid={{ gutter: 2, xs: 1, sm: 2, md: 2, column: 2 }}
               dataSource={demand.issues}

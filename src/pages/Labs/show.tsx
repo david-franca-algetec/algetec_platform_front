@@ -255,7 +255,7 @@ export function LabsShow() {
                 <Space align="center" direction="vertical" className="w-full">
                   <Title level={5}>Problemas por Gravidade</Title>
                 </Space>
-                {labData.issues && labData.issues.length ? (
+                { labData.issues?.length ? (
                   <div className="lg:px-16">
                     <IssueChart issues={labData.issues} />
                   </div>
@@ -275,17 +275,17 @@ export function LabsShow() {
       </Row>
     ) : null,
     issues:
-      labData && labData.issues ? <IssuesTable dataSource={labData.issues} loading={isLoading || isFetching} /> : null,
+       labData?.issues ? <IssuesTable dataSource={labData.issues} loading={isLoading || isFetching} /> : null,
     demands:
-      labData && labData.demands ? (
+       labData?.demands ? (
         <DemandsTable dataSource={labData.demands} loading={isLoading || isFetching} />
       ) : null,
     versions:
-      labData && labData.releases ? (
+       labData?.releases ? (
         <ReleaseTable dataSource={labData.releases} loading={isLoading || isFetching} />
       ) : null,
     changelog:
-      labData && labData.releases.length ? (
+       labData?.releases.length ? (
         <Timeline
           mode="alternate"
           items={orderBy(handleRelease(labData.releases), 'created_at', 'desc').map((release) => ({
@@ -319,7 +319,7 @@ export function LabsShow() {
         <Empty />
       ),
     files:
-      labData && labData.demands.length ? (
+       labData?.demands.length ? (
         <List
           grid={{ gutter: 16, column: 2, lg: 2, md: 1 }}
           dataSource={handleFiles(labData)}

@@ -376,7 +376,7 @@ export function CreateDemandPage() {
                   showNow
                   showTime={{ format: 'HH:mm' }}
                   onChange={(value) => {
-                    if (value && value[0] && value[1]) {
+                    if ( value?.[0] && value[1]) {
                       const businessDays = numberOfBusinessDays(value[0].toDate(), value[1].toDate());
                       if (businessDays) {
                         form.setFieldValue(['list', name, 'message'], businessDays.message);
@@ -700,7 +700,7 @@ export function CreateDemandPage() {
                                   <MinusCircleOutlined
                                     onClick={() => {
                                       const values: { type: string }[] | undefined = form.getFieldValue('list');
-                                      if (values && values[name] && values[name].type) {
+                                      if ( values?.[name] && values[name].type) {
                                         const items = [...selectedItems];
                                         const index = items.indexOf(values[name].type);
                                         delete items[index];
