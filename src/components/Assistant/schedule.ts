@@ -21,7 +21,7 @@ export interface AssistantValue {
   designing_range: [number, number];
 }
 
-function skipHours(hoursToSkip: number, currentDate: Dayjs, schedules: IScheduleResponse[], isConcurrent: boolean) {
+function skipHours(hoursToSkip: number, currentDate: Dayjs, schedules: IScheduleResponse[], isConcurrent?: boolean) {
   const skips = Array<string>();
   const weekend: string[] = [];
   const holiday: string[] = [];
@@ -80,8 +80,8 @@ export function createSchedule(
   type: string,
   assistantValue: AssistantValue,
   existingSchedules: IScheduleResponse[],
-  currentDemandId: number,
-  isConcurrent: boolean,
+  currentDemandId?: number,
+  isConcurrent?: boolean,
 ): { schedule: IScheduleResponse; skips: string[] } {
   const logs: string[] = [];
   // Obter a data limite do assistente a partir de assistantValue.dateTime
@@ -119,7 +119,7 @@ export function createSchedule(
       startedAt,
       finishedAt,
       type,
-      demand: currentDemandId,
+      demand: currentDemandId || 0,
     },
     skips,
   };

@@ -1,5 +1,6 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { nanoid } from '@reduxjs/toolkit';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Button, Checkbox, Col, DatePicker, Form, InputNumber, List, Radio, Row, Select, Slider, Space } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -96,12 +97,12 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
 
   const [result, setResult] = useState<Result>({});
 
-  const { data: ualabScheduleData } = useGetByUserQuery(ualabDeveloper || 0, { skip: !ualabDeveloper });
-  const { data: codingScheduleData } = useGetByUserQuery(codingDeveloper || 0, { skip: !codingDeveloper });
-  const { data: modelingScheduleData } = useGetByUserQuery(modelingDeveloper || 0, { skip: !modelingDeveloper });
-  const { data: testingScheduleData } = useGetByUserQuery(testingDeveloper || 0, { skip: !testingDeveloper });
-  const { data: scriptingScheduleData } = useGetByUserQuery(scriptingDeveloper || 0, { skip: !scriptingDeveloper });
-  const { data: designingScheduleData } = useGetByUserQuery(designingDeveloper || 0, { skip: !designingDeveloper });
+  const { data: ualabScheduleData } = useGetByUserQuery(ualabDeveloper || skipToken);
+  const { data: codingScheduleData } = useGetByUserQuery(codingDeveloper || skipToken);
+  const { data: modelingScheduleData } = useGetByUserQuery(modelingDeveloper || skipToken);
+  const { data: testingScheduleData } = useGetByUserQuery(testingDeveloper || skipToken);
+  const { data: scriptingScheduleData } = useGetByUserQuery(scriptingDeveloper || skipToken);
+  const { data: designingScheduleData } = useGetByUserQuery(designingDeveloper || skipToken);
   const { data: usersData, isLoading: usersLoading } = useGetUsersQuery();
 
   const [form] = Form.useForm<AssistantValues>();
@@ -234,7 +235,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.ualab_activity,
       );
       initialResult.ualab = {
@@ -259,7 +260,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.coding_activity,
       );
       initialResult.coding = {
@@ -284,7 +285,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.testing_activity,
       );
       initialResult.testing = {
@@ -309,7 +310,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.scripting_activity,
       );
       initialResult.scripting = {
@@ -334,7 +335,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.modeling_activity,
       );
       initialResult.modeling = {
@@ -359,7 +360,7 @@ export function Assistant({ onFinish, edit, id }: AssistantProps) {
           designing_range: values.designing_range,
         },
         schedule,
-        id || 0,
+        id,
         values.designing_activity,
       );
       initialResult.designing = {

@@ -1,6 +1,4 @@
-/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-// noinspection JSIgnoredPromiseFromCall
 
 /* eslint-disable react/jsx-props-no-spreading */
 import { DeleteOutlined, MenuOutlined } from '@ant-design/icons';
@@ -179,16 +177,16 @@ export function CreateChecklist({ onClose, open }: CreateProps) {
   const [form] = Form.useForm<IChecklistCreate>();
 
   const onFinish = async () => {
-    const { name, department_ids } = await form.validateFields();
+    const values = await form.validateFields();
     createChecklist({
-      name,
+      name: values.name,
       parameters: dataSource.map((data, index) => ({
         checked: false,
         name: data.name,
         percentage: data.percentage,
         order: index,
       })),
-      department_ids,
+      department_ids: values.department_ids,
     });
   };
 
@@ -288,11 +286,11 @@ export function CreateChecklist({ onClose, open }: CreateProps) {
 
   useEffect(() => {
     if (isError && error && 'data' in error) {
-      toast.error(handleError(error));
+      toast.error(handleError(error)).then();
     }
     if (isSuccess) {
       form.resetFields();
-      toast.success('Lista de tarefas criada com sucesso');
+      toast.success('Lista de tarefas criada com sucesso').then();
       onClose();
     }
   }, [isError, isSuccess]);
