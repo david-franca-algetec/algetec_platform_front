@@ -245,7 +245,7 @@ export function CreatePractice() {
               </Button>
             </div>
             <Space>
-              <Button icon={<UnorderedListOutlined />} onClick={() => navigate(`/editor`)}>
+              <Button icon={<UnorderedListOutlined />} onClick={() => navigate("/editor")}>
                 Templates
               </Button>
             </Space>

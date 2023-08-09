@@ -15,7 +15,7 @@ export const calendarApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllCalendar: build.query<Calendar[], { userId?: number[]; tags?: number[] } | void>({
       query: (arg) => {
-        const route = `calendars/all`;
+        const route = "calendars/all";
         if (arg) {
           const { tags, userId } = arg;
           if (tags && tags.length > 0 && userId) {

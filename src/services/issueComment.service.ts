@@ -9,7 +9,7 @@ export const issuesCommentsApi = api.injectEndpoints({
   endpoints: (build) => ({
     createIssuesComments: build.mutation<void, IssueCommentsCreate>({
       query: (body) => ({
-        url: `issueComments/create`,
+        url: "issueComments/create",
         method: 'POST',
         body,
       }),

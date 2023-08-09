@@ -572,9 +572,9 @@ export function IssueTrackerList() {
     }
     if (typeof approved !== 'undefined') {
       if (approved) {
-        params.append('approved', `true`);
+        params.append('approved', "true");
       } else {
-        params.append('approved', `false`);
+        params.append('approved', "false");
       }
     }
     if (creator && creator.length) {

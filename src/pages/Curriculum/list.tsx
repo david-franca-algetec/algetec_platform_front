@@ -6,12 +6,12 @@ export function CurriculumList() {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: `Currículos`,
+      label: "Currículos",
       children: <SkillsTable />,
     },
     {
       key: '2',
-      label: `Práticas`,
+      label: "Práticas",
       children: <PracticesTable />,
     },
   ];

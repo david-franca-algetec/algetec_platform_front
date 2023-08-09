@@ -57,7 +57,7 @@ export const authApi = api.injectEndpoints({
     }),
     captchaVerify: build.mutation<ICaptchaResponse, ICaptchaRequest>({
       query: (body) => ({
-        url: `https://www.google.com/recaptcha/api/siteverify`,
+        url: "https://www.google.com/recaptcha/api/siteverify",
         method: 'POST',
         body,
       }),
