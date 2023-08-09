@@ -41,7 +41,8 @@ export function Editor({ value }: EditorProps) {
         return;
       }
 
-      if (!imageFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      const search = /\.(jpg|jpeg|png)$/;
+      if (!search.exec(imageFile.name)) {
         return;
       }
 

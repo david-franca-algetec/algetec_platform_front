@@ -51,7 +51,6 @@ interface RowProps extends HTMLAttributes<HTMLTableRowElement> {
   'data-row-key': string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditableContext = createContext<FormInstance | null>(null);
 
 function TableRow({ children, ...props }: RowProps) {
@@ -147,8 +146,7 @@ function EditableCell({
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit} aria-hidden="true">
         {children}
       </div>
     );

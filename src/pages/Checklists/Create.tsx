@@ -144,8 +144,7 @@ function EditableCell({
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit} aria-hidden="true">
         {children}
       </div>
     );

@@ -11,7 +11,6 @@ export const tagRender = (props: CustomTagProps) => {
     event.stopPropagation();
   };
 
-  // eslint-disable-next-line consistent-return
   const color = useMemo(() => {
     if (typeof value === 'string') {
       const newValue = value.split('#')[1];
@@ -20,6 +19,7 @@ export const tagRender = (props: CustomTagProps) => {
         return `#${newValue}`;
       }
     }
+    return undefined;
   }, [value]);
   return (
     <Tag

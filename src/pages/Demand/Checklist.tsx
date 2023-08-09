@@ -162,8 +162,7 @@ function EditableCell({ title, editable, children, dataIndex, record, handleSave
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit} aria-hidden="true">
         {children}
       </div>
     );
@@ -247,8 +246,7 @@ export function Checklist({ onSelect, onOpen, select }: IChecklistProps) {
       dataIndex: 'operation',
       align: 'center',
       width: '20%',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_, record: any) =>
+      render: (_, record) =>
         dataSource.length >= 1 ? (
           <Popconfirm title="Tem certeza?" onConfirm={() => handleDelete(record.key)}>
             <Button danger type="primary" icon={<DeleteOutlined />} />

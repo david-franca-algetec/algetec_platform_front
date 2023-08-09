@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/no-unstable-nested-components */
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, InputRef, Space } from 'antd';
 import { ColumnType, FilterConfirmProps } from 'antd/es/table/interface';
@@ -33,7 +31,7 @@ export function SearchColumn<T>({ index, title, includes, onSearch, dataValue }:
 
   const getColumnSearchProps = (dataIndex: keyof T, dataTitle: string, isIncludes?: boolean): ColumnType<T> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()} aria-hidden="true">
         <Input
           ref={searchInput}
           placeholder={`Pesquisar ${dataTitle}`}
