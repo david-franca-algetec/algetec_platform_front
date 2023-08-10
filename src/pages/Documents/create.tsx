@@ -1,11 +1,14 @@
 import { ArrowLeftOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
-import { Button, Card, Col, Form, Input, message, Row, Space } from 'antd';
+import { Button, Card, Col, Form, Input, message, Row, Select, Space } from 'antd';
 import JoditEditor, { IJoditEditorProps, Jodit } from 'jodit-react';
+import { orderBy } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import uploadImageIcon from '../../assets/upload.png';
+import { SidebarWithHeader } from '../../components';
 import { handleError } from '../../helpers';
+import { useGetExperimentsQuery } from '../../services/demands.service';
 import { useCreateImageMutation } from '../../services/images.service';
 import {
   TemplateCreate,
@@ -15,7 +18,7 @@ import {
 } from '../../services/templates.service';
 import { editorButtons } from './components';
 
-export function CreatePractice() {
+export function DocumentsCreate() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [toast, contextHolder] = message.useMessage();
@@ -27,7 +30,19 @@ export function CreatePractice() {
     { isLoading: updateIsLoading, isSuccess: updateIsSuccess, isError: updateIsError, error: updateError },
   ] = useUpdateTemplateMutation();
   const { data: templateData, isLoading: templateIsLoading } = useShowTemplateQuery(Number(id) || skipToken);
+  const { data: experimentsData } = useGetExperimentsQuery();
   const [uploadImage] = useCreateImageMutation();
+
+  const experimentsOptions = useMemo(
+    () =>
+      experimentsData
+        ? orderBy(experimentsData, 'name').map((experiment) => ({
+            label: `${experiment.id} - ${experiment.name}`,
+            value: experiment.id,
+          }))
+        : [],
+    [experimentsData],
+  );
 
   const [form] = Form.useForm<TemplateCreate>();
 
@@ -71,9 +86,9 @@ export function CreatePractice() {
 
   const onFinish = (values: TemplateCreate) => {
     if (id) {
-      updateTemplate({ id: Number(id), name: values.name, content });
+      updateTemplate({ id: Number(id), name: values.name, content, experiment_id: values.experiment_id });
     } else {
-      createTemplate({ name: values.name, content });
+      createTemplate({ name: values.name, content, experiment_id: values.experiment_id });
     }
   };
 
@@ -231,7 +246,7 @@ export function CreatePractice() {
   }, [id, templateData, templateIsLoading]);
 
   return (
-    <>
+    <SidebarWithHeader>
       <Row>
         <Col span={24}>
           <div className="flex items-center justify-between w-full pb-4">
@@ -270,6 +285,18 @@ export function CreatePractice() {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                label="Laboratório"
+                name="experiment_id"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, selecione uma opção.',
+                  },
+                ]}
+              >
+                <Select optionFilterProp="label" showSearch options={experimentsOptions} />
+              </Form.Item>
               <Form.Item label="Conteúdo" name="content">
                 <JoditEditor
                   ref={editor}
@@ -289,6 +316,6 @@ export function CreatePractice() {
           </Card>
         </Col>
       </Row>
-    </>
+    </SidebarWithHeader>
   );
 }

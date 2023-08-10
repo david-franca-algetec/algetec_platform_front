@@ -74,7 +74,7 @@ export function PracticeEdit({ onClose, isOpen, id }: EditProps) {
 
   useEffect(() => {
     if (isUpdatePracticeSuccess) {
-      toast.success('Habilidade atualizada com sucesso!').then();
+      toast.success('Prática atualizada com sucesso!').then();
       form.resetFields();
       onClose();
     }

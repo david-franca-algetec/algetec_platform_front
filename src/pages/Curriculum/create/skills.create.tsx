@@ -50,7 +50,10 @@ function SkillForm() {
   const { data: unitiesData, isLoading: isLoadingUnities } = useAllUnitiesQuery();
 
   const practicesOptions = useMemo(
-    () => (practicesData ? practicesData.map((el) => ({ value: el.id, label: `${el.id} - ${el.name}` })) : []),
+    () =>
+      practicesData
+        ? practicesData.map((el) => ({ value: el.id, label: `${el.code} | ID: ${el.experiment_id} | ${el.name}` }))
+        : [],
     [practicesData],
   );
 

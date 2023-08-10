@@ -7,7 +7,7 @@ import type { Key, TableRowSelection } from 'antd/es/table/interface';
 import { orderBy } from 'lodash';
 import { useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
-import { DateField, EmailField, SearchColumn, TagField, TextField } from '../../components';
+import { DateField, EmailField, SearchColumn, SidebarWithHeader, TagField, TextField } from '../../components';
 import { useAppSelector } from '../../config/hooks';
 import { getUniqueColor, handleStringDate } from '../../helpers';
 import { useDisclosure } from '../../hooks/useDisclosure';
@@ -236,64 +236,66 @@ export function UsersPage() {
   }, [users, selectedRowKeys]);
 
   return (
-    <Row gutter={[16, 16]}>
-      {contextHolder}
-      <Col lg={18} sm={24} xs={24}>
-        <Typography.Title level={4}>Usuários</Typography.Title>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="users-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        {contextHolder}
+        <Col lg={18} sm={24} xs={24}>
+          <Typography.Title level={4}>Usuários</Typography.Title>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="users-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <Tooltip title="Adicionar">
+            <Button
+              block
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{
+                display: userAuth?.role.admin ? 'inline' : 'none',
+              }}
+              onClick={() => {
+                create.onOpen();
+              }}
+            >
+              Adicionar
             </Button>
           </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <Tooltip title="Adicionar">
-          <Button
-            block
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              display: userAuth?.role.admin ? 'inline' : 'none',
-            }}
-            onClick={() => {
-              create.onOpen();
-            }}
-          >
-            Adicionar
-          </Button>
-        </Tooltip>
-      </Col>
-      <Col span={24}>
-        <Card>
-          <Table
-            loading={isLoading}
-            size="small"
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1000, y: '72vh' }}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
-            }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal(total, range) {
-                return `${range[0]}-${range[1]} de ${total} usuários`;
-              },
-            }}
-            rowSelection={rowSelection}
-          />
-        </Card>
-      </Col>
-      <EditUser onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
-      <CreateUser onClose={create.onClose} open={create.isOpen} />
-    </Row>
+        </Col>
+        <Col span={24}>
+          <Card>
+            <Table
+              loading={isLoading}
+              size="small"
+              columns={columns}
+              dataSource={data}
+              scroll={{ x: 1000, y: '72vh' }}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal(total, range) {
+                  return `${range[0]}-${range[1]} de ${total} usuários`;
+                },
+              }}
+              rowSelection={rowSelection}
+            />
+          </Card>
+        </Col>
+        <EditUser onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
+        <CreateUser onClose={create.onClose} open={create.isOpen} />
+      </Row>
+    </SidebarWithHeader>
   );
 }

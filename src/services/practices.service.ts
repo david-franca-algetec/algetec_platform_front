@@ -79,11 +79,11 @@ const practicesApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getPractices: builder.query<Practice[], void>({
       query: () => '/practices/all',
-      providesTags: ['Practices'],
+      providesTags: ['Documents'],
     }),
     showPractice: builder.query<Practice, number>({
       query: (id) => `/practices/show/${id}`,
-      providesTags: ['Practices'],
+      providesTags: ['Documents'],
       transformResponse: (response: Practice[]) => response[0],
     }),
     createPractice: builder.mutation<void, PracticesCreate>({
@@ -92,14 +92,14 @@ const practicesApi = api.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Practices'],
+      invalidatesTags: ['Documents'],
     }),
     deletePractice: builder.mutation<void, number>({
       query: (id) => ({
         url: `/practices/delete/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Practices'],
+      invalidatesTags: ['Documents'],
     }),
     updatePractice: builder.mutation<void, UpdatePractice>({
       query: (data) => ({
@@ -107,7 +107,7 @@ const practicesApi = api.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Practices'],
+      invalidatesTags: ['Documents'],
     }),
     allAreas: builder.query<Area[], void>({
       query: () => '/practices/allAreas',

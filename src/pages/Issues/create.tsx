@@ -465,7 +465,7 @@ export function IssueCreate({ onClose, isOpen }: IssueCreateProps) {
       <Form layout="vertical" form={form} onFinish={onFinish} initialValues={{ status: ISSUES_STATUS.NEW }}>
         {contextHolder}
         <Form.Item
-          label="Experimento"
+          label="Laboratório"
           name="experiment_id"
           rules={[
             {

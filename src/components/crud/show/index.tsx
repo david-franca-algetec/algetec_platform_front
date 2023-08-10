@@ -2,6 +2,7 @@ import { ArrowLeftOutlined, EditOutlined, ReloadOutlined, UnorderedListOutlined 
 import { Button, Col, Row } from 'antd';
 import { PropsWithChildren, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { SidebarWithHeader } from '../../Sidebar';
 
 interface ShowProps extends PropsWithChildren {
   resource: string;
@@ -16,7 +17,7 @@ export function Show({ resource, children, title, refetch, editUrl, modal }: Sho
   const params = useParams();
   const id = useMemo(() => (params.id ? Number(params.id) : 0), [params.id]);
   return (
-    <>
+    <SidebarWithHeader>
       <Row gutter={[16, 16]} className="pb-4">
         <Col lg={12} md={24} sm={24} xs={12}>
           <Button className="text-xl font-bold" icon={<ArrowLeftOutlined />} type="text" onClick={() => navigate(-1)}>
@@ -47,7 +48,7 @@ export function Show({ resource, children, title, refetch, editUrl, modal }: Sho
         </Col>
       </Row>
       {children}
-    </>
+    </SidebarWithHeader>
   );
 }
 

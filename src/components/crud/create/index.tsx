@@ -2,6 +2,7 @@ import { ArrowLeftOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Space } from 'antd';
 import { PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SidebarWithHeader } from '../../Sidebar';
 
 interface CreateProps extends PropsWithChildren {
   title: string;
@@ -12,7 +13,7 @@ interface CreateProps extends PropsWithChildren {
 export function Create({ listName, resource, title, children }: CreateProps) {
   const navigate = useNavigate();
   return (
-    <>
+    <SidebarWithHeader>
       <Row>
         <Col span={24}>
           <div className="flex items-center justify-between w-full pb-4">
@@ -37,6 +38,6 @@ export function Create({ listName, resource, title, children }: CreateProps) {
       <Row>
         <Col span={24}>{children}</Col>
       </Row>
-    </>
+    </SidebarWithHeader>
   );
 }

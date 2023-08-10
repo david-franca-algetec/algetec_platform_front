@@ -5,7 +5,7 @@ import { Key, TableRowSelection } from 'antd/es/table/interface';
 import { orderBy } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SearchColumn, TextField } from '../../components';
+import { SearchColumn, SidebarWithHeader, TextField } from '../../components';
 import { handleError } from '../../helpers';
 import { useAllTemplatesQuery, useDeleteTemplateMutation } from '../../services/templates.service';
 
@@ -18,7 +18,7 @@ interface DataType {
 
 const { confirm } = Modal;
 
-export function PracticesList() {
+export function DocumentsList() {
   const [toast, contextHolder] = message.useMessage();
   const { data: templates, isLoading } = useAllTemplatesQuery();
   const navigate = useNavigate();
@@ -111,50 +111,52 @@ export function PracticesList() {
   };
 
   return (
-    <Row gutter={[16, 16]}>
-      {contextHolder}
-      <Col lg={21} sm={24} xs={24}>
-        <Typography.Title level={4}>Templates</Typography.Title>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <Tooltip title="Adicionar">
-          <Button
-            block
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              navigate('/editor/create');
-            }}
-          >
-            Adicionar
-          </Button>
-        </Tooltip>
-      </Col>
-      <Col span={24}>
-        <Card>
-          <Table
-            loading={isLoading}
-            size="small"
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1000, y: '72vh' }}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
-            }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal(total, range) {
-                return `${range[0]}-${range[1]} de ${total} templates`;
-              },
-            }}
-            rowSelection={rowSelection}
-          />
-        </Card>
-      </Col>
-    </Row>
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        {contextHolder}
+        <Col lg={21} sm={24} xs={24}>
+          <Typography.Title level={4}>Documentos</Typography.Title>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <Tooltip title="Adicionar">
+            <Button
+              block
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                navigate('/editor/create');
+              }}
+            >
+              Adicionar
+            </Button>
+          </Tooltip>
+        </Col>
+        <Col span={24}>
+          <Card>
+            <Table
+              loading={isLoading}
+              size="small"
+              columns={columns}
+              dataSource={data}
+              scroll={{ x: 1000, y: '72vh' }}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal(total, range) {
+                  return `${range[0]}-${range[1]} de ${total} templates`;
+                },
+              }}
+              rowSelection={rowSelection}
+            />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

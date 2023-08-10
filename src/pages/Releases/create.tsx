@@ -20,7 +20,7 @@ interface InitialValues {
   description: string;
 }
 
-export function CreateVersion({ onClose, open }: CreateProps) {
+export function CreateRelease({ onClose, open }: CreateProps) {
   const { data: experiments, isLoading: experimentsLoading } = useGetExperimentsQuery();
   const [createRelease, { isError, error, isLoading, isSuccess }] = useCreateReleaseMutation();
   const { data: releaseTypes, isLoading: releaseTypesLoading } = useGetReleaseTypesQuery();

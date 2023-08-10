@@ -16,7 +16,7 @@ interface InitialValues {
   description?: string;
 }
 
-export function EditVersion({ onClose, id, open }: EditProps) {
+export function EditRelease({ onClose, id, open }: EditProps) {
   const [toast, contextHolder] = message.useMessage();
   const { data: releaseTypes, isLoading: releaseTypesLoading } = useGetReleaseTypesQuery();
   const [updateRelease, { isError, isLoading: releaseUpdateLoading, isSuccess, error }] = useUpdateReleaseMutation();

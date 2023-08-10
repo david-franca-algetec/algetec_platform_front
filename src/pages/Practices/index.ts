@@ -1,1 +1,0 @@
-export { PracticesList } from './list';

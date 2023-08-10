@@ -33,7 +33,7 @@ import { orderBy, uniqBy } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { createSearchParams, Link, useSearchParams } from 'react-router-dom';
-import { DateField, SearchColumn, TagField, TextField } from '../../components';
+import { DateField, SearchColumn, SidebarWithHeader, TagField, TextField } from '../../components';
 import { UrlField } from '../../components/fields/url';
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { setDemandFilters } from '../../config/reducers/demandSlice';
@@ -343,9 +343,9 @@ export function DemandPage() {
     {
       ...SearchColumn({
         index: 'experiment_id',
-        title: 'ID do Experimento',
+        title: 'ID do Lab',
       }),
-      title: 'ID Exp',
+      title: 'ID Lab',
       dataIndex: 'experiment_id',
       key: 'experiment_id',
       width: 100,
@@ -360,11 +360,11 @@ export function DemandPage() {
     {
       ...SearchColumn({
         index: 'experiment',
-        title: 'Experimento',
+        title: 'Laboratório',
         includes: true,
       }),
       filteredValue: experiment ? [experiment] : null,
-      title: 'Experimento',
+      title: 'Laboratório',
       dataIndex: 'experiment',
       key: 'experiment',
       sortOrder: sorterKey === 'experiment' && order ? (order as SortOrder) : null,
@@ -682,8 +682,8 @@ export function DemandPage() {
   const exportHeaders = useMemo(
     () => [
       { label: 'ID', key: 'id' },
-      { label: 'ID do Experimento', key: 'experiment_id' },
-      { label: 'Experimento', key: 'experiment' },
+      { label: 'ID do Laboratório', key: 'experiment_id' },
+      { label: 'Laboratório', key: 'experiment' },
       { label: 'Instituição', key: 'client' },
       { label: 'Tags', key: 'tags' },
       { label: 'Prazo', key: 'finished_at' },
@@ -821,64 +821,66 @@ export function DemandPage() {
   }, []);
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col lg={user?.role?.super_admin && selectedRowKeys.length ? 15 : 18} sm={24} xs={24}>
-        <Typography.Title level={4}>Entregas</Typography.Title>
-      </Col>
-      {user?.role?.super_admin && selectedRowKeys.length ? (
-        <Col lg={3} sm={12} xs={24}>
-          <Recalculate ids={selectedRowKeys} />
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col lg={user?.role?.super_admin && selectedRowKeys.length ? 15 : 18} sm={24} xs={24}>
+          <Typography.Title level={4}>Entregas</Typography.Title>
         </Col>
-      ) : null}
-      <Col lg={3} sm={12} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="demands-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
-            </Button>
+        {user?.role?.super_admin && selectedRowKeys.length ? (
+          <Col lg={3} sm={12} xs={24}>
+            <Recalculate ids={selectedRowKeys} />
+          </Col>
+        ) : null}
+        <Col lg={3} sm={12} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="demands-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <Tooltip title="Adicionar">
+            <Link to="/demands/create">
+              <Button
+                block
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{
+                  display: user?.role.demands_admin ? 'inline' : 'none',
+                }}
+              >
+                Adicionar
+              </Button>
+            </Link>
           </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <Tooltip title="Adicionar">
-          <Link to="/demands/create">
-            <Button
-              block
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{
-                display: user?.role.demands_admin ? 'inline' : 'none',
+        </Col>
+        <Col span={24}>
+          <Card>
+            {contextHolder}
+            <Table
+              onChange={(_, filters, sorter) => {
+                handleTableChange(filters, sorter);
               }}
-            >
-              Adicionar
-            </Button>
-          </Link>
-        </Tooltip>
-      </Col>
-      <Col span={24}>
-        <Card>
-          {contextHolder}
-          <Table
-            onChange={(_, filters, sorter) => {
-              handleTableChange(filters, sorter);
-            }}
-            loading={isLoading}
-            size="small"
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1000, y: '72vh' }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal(total, range) {
-                return `${range[0]}-${range[1]} de ${total} entregas`;
-              },
-            }}
-            rowSelection={rowSelection}
-          />
-        </Card>
-      </Col>
-    </Row>
+              loading={isLoading}
+              size="small"
+              columns={columns}
+              dataSource={data}
+              scroll={{ x: 1000, y: '72vh' }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal(total, range) {
+                  return `${range[0]}-${range[1]} de ${total} entregas`;
+                },
+              }}
+              rowSelection={rowSelection}
+            />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

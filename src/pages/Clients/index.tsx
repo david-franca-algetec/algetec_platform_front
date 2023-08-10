@@ -6,7 +6,7 @@ import type { ColumnsType, Key, TableRowSelection } from 'antd/es/table/interfac
 import { orderBy } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
-import { DateField, SearchColumn, TextField } from '../../components';
+import { DateField, SearchColumn, SidebarWithHeader, TextField } from '../../components';
 import { useAppSelector } from '../../config/hooks';
 import { handleError } from '../../helpers';
 import { sortByDate } from '../../helpers/sortDate';
@@ -191,63 +191,65 @@ export function ClientsPage() {
   }, [institutionsData]);
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col lg={18} sm={24} xs={24}>
-        <Typography.Title level={4}>Instituições</Typography.Title>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="institutions-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
-            </Button>
-          </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <Button
-          block
-          type="primary"
-          icon={<PlusOutlined />}
-          style={{
-            display: user?.role.admin ? 'inline' : 'none',
-          }}
-          onClick={() => {
-            create.onOpen();
-          }}
-        >
-          Adicionar
-        </Button>
-      </Col>
-      <Col span={24}>
-        <Card>
-          {contextHolder}
-          <Table
-            className="w-full"
-            loading={isLoading}
-            size="small"
-            scroll={{ x: 1000, y: '72vh' }}
-            columns={columns}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col lg={18} sm={24} xs={24}>
+          <Typography.Title level={4}>Instituições</Typography.Title>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="institutions-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <Button
+            block
+            type="primary"
+            icon={<PlusOutlined />}
+            style={{
+              display: user?.role.admin ? 'inline' : 'none',
             }}
-            dataSource={data}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal(total, range) {
-                return `${range[0]}-${range[1]} de ${total} instituições`;
-              },
+            onClick={() => {
+              create.onOpen();
             }}
-            rowSelection={rowSelection}
-          />
-          <EditClient onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
-          <CreateClient onClose={create.onClose} open={create.isOpen} />
-        </Card>
-      </Col>
-    </Row>
+          >
+            Adicionar
+          </Button>
+        </Col>
+        <Col span={24}>
+          <Card>
+            {contextHolder}
+            <Table
+              className="w-full"
+              loading={isLoading}
+              size="small"
+              scroll={{ x: 1000, y: '72vh' }}
+              columns={columns}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              dataSource={data}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal(total, range) {
+                  return `${range[0]}-${range[1]} de ${total} instituições`;
+                },
+              }}
+              rowSelection={rowSelection}
+            />
+            <EditClient onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
+            <CreateClient onClose={create.onClose} open={create.isOpen} />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

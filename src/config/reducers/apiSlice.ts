@@ -40,7 +40,7 @@ export const api = createApi({
     'Templates',
     'Skills',
     'Objects',
-    'Practices',
+    'Documents',
     'Competences',
     'CompetenceAreas',
     'Areas',

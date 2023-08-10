@@ -91,7 +91,7 @@ export function DemandsView() {
             column={1}
             bordered
           >
-            <Descriptions.Item label="Experimento">
+            <Descriptions.Item label="Laboratório">
               <UrlField
                 style={{
                   maxWidth: width - 70,

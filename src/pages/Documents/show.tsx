@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Show } from '../../components/crud/show';
 import { useShowTemplateQuery } from '../../services/templates.service';
 
-export function PracticeShow() {
+export function DocumentsShow() {
   const navigate = useNavigate();
   const params = useParams();
   const id = useMemo(() => (params.id ? Number(params.id) : 0), [params.id]);

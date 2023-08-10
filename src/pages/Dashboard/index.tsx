@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { orderBy } from 'lodash';
 import { useEffect, useMemo } from 'react';
 import { createSearchParams, useLocation, useSearchParams } from 'react-router-dom';
+import { SidebarWithHeader } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { selectCurrentUser } from '../../config/reducers/authSlice';
 import {
@@ -146,70 +147,72 @@ export function Dashboard() {
   }, [search]);
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col lg={9} md={12} sm={12} xs={24}>
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          optionFilterProp="label"
-          options={users.map((user) => ({ value: user.id, label: user.name }))}
-          placeholder="Usuários"
-          loading={!(currentUser && !usersLoading)}
-          value={currentUser && !usersLoading ? demandModeUsers : []}
-          onChange={onDemandUserChange}
-          maxTagCount="responsive"
-          className="w-full"
-        />
-      </Col>
-      <Col lg={9} md={12} sm={12} xs={24}>
-        <Select
-          className="w-full"
-          options={tags.map((tag) => ({ value: tag.id.toString(), label: tag.name }))}
-          placeholder="Tags"
-          allowClear
-          mode="tags"
-          loading={tagsLoading}
-          value={!tagsLoading ? demandModeTags : []}
-          onChange={onDemandTagsChange}
-          maxTagCount="responsive"
-        />
-      </Col>
-      <Col lg={3} md={12} sm={12} xs={12}>
-        <Button block icon={<CalendarOutlined />} onClick={() => onDayChange(dayjs())}>
-          Hoje
-        </Button>
-      </Col>
-      <Col lg={3} md={12} sm={12} xs={12}>
-        <Button
-          block
-          icon={<ReloadOutlined />}
-          loading={usersLoading || allCalendarIsLoading || tagsLoading || forUsersIsLoading}
-          onClick={refetch}
-        >
-          Atualizar
-        </Button>
-      </Col>
-      <Col span={24}>
-        <CalendarDashboard
-          mode={{ onDemandTagsChange, onDemandUserChange, onTabChange, onDayChange }}
-          calendarProps={{
-            calendar,
-            users,
-            calendarForUser: forUser,
-          }}
-        />
-      </Col>
-      <Col span={24}>
-        <ChartsDashboard
-          calendar={calendar}
-          demands={demands}
-          users={users}
-          onSelect1Change={onSelect1Change}
-          onSelect2Change={onSelect2Change}
-          onSelect3Change={onSelect3Change}
-        />
-      </Col>
-    </Row>
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col lg={9} md={12} sm={12} xs={24}>
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="label"
+            options={users.map((user) => ({ value: user.id, label: user.name }))}
+            placeholder="Usuários"
+            loading={!(currentUser && !usersLoading)}
+            value={currentUser && !usersLoading ? demandModeUsers : []}
+            onChange={onDemandUserChange}
+            maxTagCount="responsive"
+            className="w-full"
+          />
+        </Col>
+        <Col lg={9} md={12} sm={12} xs={24}>
+          <Select
+            className="w-full"
+            options={tags.map((tag) => ({ value: tag.id.toString(), label: tag.name }))}
+            placeholder="Tags"
+            allowClear
+            mode="tags"
+            loading={tagsLoading}
+            value={!tagsLoading ? demandModeTags : []}
+            onChange={onDemandTagsChange}
+            maxTagCount="responsive"
+          />
+        </Col>
+        <Col lg={3} md={12} sm={12} xs={12}>
+          <Button block icon={<CalendarOutlined />} onClick={() => onDayChange(dayjs())}>
+            Hoje
+          </Button>
+        </Col>
+        <Col lg={3} md={12} sm={12} xs={12}>
+          <Button
+            block
+            icon={<ReloadOutlined />}
+            loading={usersLoading || allCalendarIsLoading || tagsLoading || forUsersIsLoading}
+            onClick={refetch}
+          >
+            Atualizar
+          </Button>
+        </Col>
+        <Col span={24}>
+          <CalendarDashboard
+            mode={{ onDemandTagsChange, onDemandUserChange, onTabChange, onDayChange }}
+            calendarProps={{
+              calendar,
+              users,
+              calendarForUser: forUser,
+            }}
+          />
+        </Col>
+        <Col span={24}>
+          <ChartsDashboard
+            calendar={calendar}
+            demands={demands}
+            users={users}
+            onSelect1Change={onSelect1Change}
+            onSelect2Change={onSelect2Change}
+            onSelect3Change={onSelect3Change}
+          />
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

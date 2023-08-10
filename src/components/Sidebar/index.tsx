@@ -45,9 +45,9 @@ import {
 } from 'antd';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { orderBy } from 'lodash';
-import { Key, ReactNode, useEffect, useState } from 'react';
+import { Key, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
-import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import logoBranca from '../../assets/logo-branca.png';
 
 import logo from '../../assets/logo.png';
@@ -109,7 +109,7 @@ function SidebarContent({ isDarkMode }: SidebarContentProps) {
     getItem('Tarefas', 'checklists', <CheckOutlined />),
     getItem('Problemas', 'issues', <IssuesCloseOutlined />),
     getItem('Laboratórios', 'labs', <ExperimentOutlined />),
-    getItem('Editor', 'editor', <FontSizeOutlined />),
+    getItem('Documentos', 'documents', <FontSizeOutlined />),
     getItem('Currículos', 'curriculums', <ReconciliationOutlined />),
   ];
 
@@ -364,7 +364,7 @@ function MobileNav({ isDarkMode, setMode, collapsed, setCollapsed }: MobileNavPr
   );
 }
 
-export function SidebarWithHeader() {
+export function SidebarWithHeader({ children }: PropsWithChildren) {
   const screens = useBreakpoint();
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const { isLoggedIn, isDarkMode } = useAppSelector((state) => state.auth);
@@ -425,7 +425,7 @@ export function SidebarWithHeader() {
               background: isDarkMode ? '#00080f' : '#deedfc',
             }}
           >
-            <Outlet />
+            {children}
             <FloatButton.BackTop />
           </Content>
         </Layout>

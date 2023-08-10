@@ -28,6 +28,7 @@ import { ColumnsType, Key, TableRowSelection } from 'antd/es/table/interface';
 import { orderBy } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
+import { useNavigate } from 'react-router-dom';
 import { ScrollArea, SearchColumn, TagField, TextField } from '../../../components';
 import { getUniqueColor, handleError, handleStringDate } from '../../../helpers';
 import { useDisclosure } from '../../../hooks/useDisclosure';
@@ -61,6 +62,7 @@ interface DataType {
 const { confirm } = Modal;
 
 export function SkillsTable() {
+  const navigate = useNavigate();
   const [toast, contextHolder] = message.useMessage();
   const [id, setId] = useState<number>();
   const createCurriculum = useDisclosure();
@@ -125,6 +127,93 @@ export function SkillsTable() {
   const columns: ColumnsType<DataType> = [
     {
       ...SearchColumn({
+        index: 'competenceCurriculumName',
+        title: 'Currículo',
+        includes: true,
+      }),
+      title: 'Currículo',
+      dataIndex: 'competenceCurriculumName',
+      key: 'competenceCurriculumName',
+      showSorterTooltip: false,
+      align: 'center',
+      width: 150,
+      sorter: {
+        compare: (a, b) => a.competenceCurriculumName.localeCompare(b.competenceCurriculumName),
+      },
+      render: (value) => <TextField value={value} ellipsis />,
+    },
+    {
+      ...SearchColumn({
+        index: 'competenceAreaName',
+        title: 'Área de Competência',
+        includes: true,
+      }),
+      title: 'Área da Competência',
+      dataIndex: 'competenceAreaName',
+      key: 'competenceAreaName',
+      showSorterTooltip: false,
+      align: 'center',
+      width: 150,
+      render: (value) =>
+        value ? (
+          <Popover
+            content={
+              <ScrollArea width={300} height="100%" maxHeight={300}>
+                {value}
+              </ScrollArea>
+            }
+          >
+            <FileTextOutlined />
+          </Popover>
+        ) : (
+          <FileOutlined />
+        ),
+    },
+    {
+      ...SearchColumn({
+        index: 'competenceCode',
+        title: 'Código Competência',
+        includes: true,
+      }),
+      title: 'Cód Competência',
+      dataIndex: 'competenceCode',
+      key: 'competenceCode',
+      showSorterTooltip: false,
+      align: 'center',
+      width: 180,
+      sorter: {
+        compare: (a, b) => a.competenceCode.localeCompare(b.competenceCode),
+      },
+      render: (value) => <TextField value={value} />,
+    },
+    {
+      ...SearchColumn({
+        index: 'competenceDescription',
+        title: 'Desc Competência',
+        includes: true,
+      }),
+      title: 'Desc Competência',
+      dataIndex: 'competenceDescription',
+      key: 'competenceDescription',
+      align: 'center',
+      width: 150,
+      render: (value) =>
+        value ? (
+          <Popover
+            content={
+              <ScrollArea width={300} height="100%" maxHeight={300}>
+                {value}
+              </ScrollArea>
+            }
+          >
+            <FileTextOutlined />
+          </Popover>
+        ) : (
+          <FileOutlined />
+        ),
+    },
+    {
+      ...SearchColumn({
         index: 'code',
         title: 'Código Hab',
         includes: true,
@@ -167,6 +256,38 @@ export function SkillsTable() {
         ),
     },
     {
+      title: 'Obj Conhecimento',
+      dataIndex: 'objects',
+      key: 'objects',
+      showSorterTooltip: false,
+      align: 'center',
+      width: 150,
+      render: (values: string[]) =>
+        values.length ? (
+          <Popover content={<List dataSource={values} renderItem={(item) => <List.Item>{item}</List.Item>} />}>
+            <FileTextOutlined />
+          </Popover>
+        ) : (
+          <FileOutlined />
+        ),
+    },
+    {
+      title: 'Unidade Temática',
+      dataIndex: 'unites',
+      key: 'unites',
+      showSorterTooltip: false,
+      align: 'center',
+      width: 100,
+      render: (values: string[]) =>
+        values.length ? (
+          <Popover content={<List dataSource={values} renderItem={(item) => <List.Item>{item}</List.Item>} />}>
+            <FileTextOutlined />
+          </Popover>
+        ) : (
+          <FileOutlined />
+        ),
+    },
+    {
       ...SearchColumn({
         index: 'notes',
         title: 'Notas',
@@ -193,109 +314,6 @@ export function SkillsTable() {
         ),
     },
     {
-      ...SearchColumn({
-        index: 'competenceCode',
-        title: 'Código Competência',
-        includes: true,
-      }),
-      title: 'Cód Competência',
-      dataIndex: 'competenceCode',
-      key: 'competenceCode',
-      showSorterTooltip: false,
-      align: 'center',
-      width: 180,
-      sorter: {
-        compare: (a, b) => a.competenceCode.localeCompare(b.competenceCode),
-      },
-      render: (value) => <TextField value={value} />,
-    },
-    {
-      title: 'Obj Conhecimento',
-      dataIndex: 'objects',
-      key: 'objects',
-      showSorterTooltip: false,
-      align: 'center',
-      width: 150,
-      render: (values: string[]) =>
-        values.length ? (
-          <Popover content={<List dataSource={values} renderItem={(item) => <List.Item>{item}</List.Item>} />}>
-            <FileTextOutlined />
-          </Popover>
-        ) : (
-          <FileOutlined />
-        ),
-    },
-    {
-      ...SearchColumn({
-        index: 'competenceDescription',
-        title: 'Desc Competência',
-        includes: true,
-      }),
-      title: 'Desc Competência',
-      dataIndex: 'competenceDescription',
-      key: 'competenceDescription',
-      align: 'center',
-      width: 150,
-      render: (value) =>
-        value ? (
-          <Popover
-            content={
-              <ScrollArea width={300} height="100%" maxHeight={300}>
-                {value}
-              </ScrollArea>
-            }
-          >
-            <FileTextOutlined />
-          </Popover>
-        ) : (
-          <FileOutlined />
-        ),
-    },
-    {
-      ...SearchColumn({
-        index: 'competenceAreaName',
-        title: 'Área de Competência',
-        includes: true,
-      }),
-      title: 'Área da Competência',
-      dataIndex: 'competenceAreaName',
-      key: 'competenceAreaName',
-      showSorterTooltip: false,
-      align: 'center',
-      width: 150,
-      render: (value) =>
-        value ? (
-          <Popover
-            content={
-              <ScrollArea width={300} height="100%" maxHeight={300}>
-                {value}
-              </ScrollArea>
-            }
-          >
-            <FileTextOutlined />
-          </Popover>
-        ) : (
-          <FileOutlined />
-        ),
-    },
-    {
-      ...SearchColumn({
-        index: 'competenceCurriculumName',
-        title: 'Currículo',
-        includes: true,
-      }),
-      title: 'Currículo',
-      dataIndex: 'competenceCurriculumName',
-      key: 'competenceCurriculumName',
-      showSorterTooltip: false,
-      align: 'center',
-      width: 150,
-      sorter: {
-        compare: (a, b) => a.competenceCurriculumName.localeCompare(b.competenceCurriculumName),
-      },
-      render: (value) => <TextField value={value} ellipsis />,
-    },
-    {
       title: 'Práticas',
       dataIndex: 'practices',
       key: 'practices',
@@ -319,22 +337,6 @@ export function SkillsTable() {
         ),
     },
     {
-      title: 'Unidade Temática',
-      dataIndex: 'unites',
-      key: 'unites',
-      showSorterTooltip: false,
-      align: 'center',
-      width: 100,
-      render: (values: string[]) =>
-        values.length ? (
-          <Popover content={<List dataSource={values} renderItem={(item) => <List.Item>{item}</List.Item>} />}>
-            <FileTextOutlined />
-          </Popover>
-        ) : (
-          <FileOutlined />
-        ),
-    },
-    {
       title: 'Ações',
       key: 'actions',
       dataIndex: 'actions',
@@ -343,7 +345,7 @@ export function SkillsTable() {
       align: 'center',
       render: (_, record) => (
         <Space>
-          <Button icon={<EyeOutlined />} />
+          <Button icon={<EyeOutlined />} onClick={() => navigate(`/curriculums/skills/show/${record.id}`)} />
           <Tooltip title="Editar">
             <Button
               type="primary"
@@ -434,7 +436,7 @@ export function SkillsTable() {
             createdAt: handleStringDate(skill.createdAt),
             updatedAt: handleStringDate(skill.updatedAt),
           })),
-    [dataSource, selectedRowKeys],
+    [dataSource, selectedRowKeys, skills],
   );
 
   return (
@@ -470,8 +472,8 @@ export function SkillsTable() {
           dataSource={dataSource}
           pagination={{
             position: ['bottomCenter'],
-            defaultPageSize: 100,
-            pageSizeOptions: [100, 200, 500],
+            defaultPageSize: 50,
+            pageSizeOptions: [50, 100, 200, 500],
             showTotal(total, range) {
               return `${range[0]}-${range[1]} de ${total} habilidades`;
             },
@@ -483,6 +485,13 @@ export function SkillsTable() {
       <Col span={24}>
         <List
           dataSource={currentSource.length ? currentSource : dataSource}
+          pagination={{
+            defaultPageSize: 50,
+            pageSizeOptions: [50, 100, 200, 500],
+            showTotal(total, range) {
+              return `${range[0]}-${range[1]} de ${total} habilidades`;
+            },
+          }}
           renderItem={(item) => (
             <List.Item key={nanoid()}>
               <Descriptions
@@ -512,36 +521,48 @@ export function SkillsTable() {
                   </Space>
                 }
                 layout="vertical"
-                column={1}
+                column={3}
                 bordered
                 className="w-full"
               >
-                <Descriptions.Item label="Notas">
-                  <Typography.Text type="secondary">{item.notes}</Typography.Text>
+                <Descriptions.Item label="Currículo">
+                  <Typography.Text type="secondary">{item.competenceCurriculumName}</Typography.Text>
                 </Descriptions.Item>
-                <Descriptions.Item label="Descrição">
+                <Descriptions.Item label="Área de Competência">
+                  <Typography.Text type="secondary">{item.competenceAreaName}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label="Código da Competência">
+                  <Typography.Text type="secondary">{item.competenceCode}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label="Descrição da Competência" span={3}>
+                  <Typography.Text type="secondary">{item.competenceDescription}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label="Descrição da Habilidade" span={3}>
                   <Typography.Text type="secondary">{item.description}</Typography.Text>
                 </Descriptions.Item>
-                <Descriptions.Item label="Práticas">
-                  <Space size="small" wrap>
-                    {item.practices.map((practice) => (
-                      <TagField value={practice.name} color={getUniqueColor(practice.name)} />
-                    ))}
-                  </Space>
-                </Descriptions.Item>
-                <Descriptions.Item label="Objetos de Conhecimento" span={2}>
+                <Descriptions.Item label="Objetos de Conhecimento" span={3}>
                   <Space size="small" wrap>
                     {item.objects.map((objects) => (
                       <TagField value={objects} color={getUniqueColor(objects)} />
                     ))}
                   </Space>
                 </Descriptions.Item>
-                <Descriptions.Item label="Unidades Temáticas">
+                <Descriptions.Item label="Unidades Temáticas" span={3}>
                   <Space size="small" wrap>
                     {item.unites.map((unite) => (
                       <TagField value={unite} color={getUniqueColor(unite)} />
                     ))}
                   </Space>
+                </Descriptions.Item>
+                <Descriptions.Item label="Práticas" span={3}>
+                  <Space size="small" wrap>
+                    {item.practices.map((practice) => (
+                      <TagField value={practice.name} color={getUniqueColor(practice.name)} />
+                    ))}
+                  </Space>
+                </Descriptions.Item>
+                <Descriptions.Item label="Notas" span={3}>
+                  <Typography.Text type="secondary">{item.notes}</Typography.Text>
                 </Descriptions.Item>
               </Descriptions>
             </List.Item>

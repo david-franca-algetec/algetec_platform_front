@@ -7,7 +7,15 @@ import { Key, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { useNavigate } from 'react-router-dom';
 
-import { BooleanField, DateField, NumberField, SearchColumn, TagField, TextField } from '../../components';
+import {
+  BooleanField,
+  DateField,
+  NumberField,
+  SearchColumn,
+  SidebarWithHeader,
+  TagField,
+  TextField,
+} from '../../components';
 import { useAppSelector } from '../../config/hooks';
 import { selectCurrentUser } from '../../config/reducers/authSlice';
 import { getUniqueColor } from '../../helpers';
@@ -371,43 +379,45 @@ export function LabList() {
   );
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col xl={20} lg={20} md={20} sm={24} xs={24}>
-        <Typography.Title level={4}>Laboratórios</Typography.Title>
-      </Col>
-      <Col xl={4} lg={4} md={4} sm={24} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="labs-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
-            </Button>
-          </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col span={24}>
-        <Card>
-          <Table
-            loading={isExperimentsLoading}
-            dataSource={orderBy(experiments, 'name')}
-            columns={columns}
-            rowSelection={rowSelection}
-            className="w-full"
-            size="small"
-            scroll={{ x: 1000, y: '72vh' }}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
-            }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} laboratórios`,
-            }}
-          />
-        </Card>
-      </Col>
-    </Row>
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col xl={20} lg={20} md={20} sm={24} xs={24}>
+          <Typography.Title level={4}>Laboratórios</Typography.Title>
+        </Col>
+        <Col xl={4} lg={4} md={4} sm={24} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="labs-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col span={24}>
+          <Card>
+            <Table
+              loading={isExperimentsLoading}
+              dataSource={orderBy(experiments, 'name')}
+              columns={columns}
+              rowSelection={rowSelection}
+              className="w-full"
+              size="small"
+              scroll={{ x: 1000, y: '72vh' }}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} laboratórios`,
+              }}
+            />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

@@ -3,12 +3,13 @@ import { api } from '../config/reducers/apiSlice';
 export interface ITemplate {
   id: number;
   name: string;
+  experiment_id: number;
   content: string;
   created_at: string;
   updated_at: string;
 }
 
-export type TemplateCreate = Pick<ITemplate, 'name' | 'content'>;
+export type TemplateCreate = Pick<ITemplate, 'name' | 'content' | 'experiment_id'>;
 
 export type TemplateUpdate = Partial<TemplateCreate> & { id: number };
 export const templatesApi = api.injectEndpoints({

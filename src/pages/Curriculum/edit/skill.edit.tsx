@@ -42,7 +42,10 @@ function SkillEdit({ onClose, isOpen, id }: SkillEditProps) {
   const { data: unitiesData, isLoading: isLoadingUnities, refetch: unitiesRefetch } = useAllUnitiesQuery();
 
   const practicesOptions = useMemo(
-    () => (practicesData ? practicesData.map((el) => ({ value: el.id, label: el.name })) : []),
+    () =>
+      practicesData
+        ? practicesData.map((el) => ({ value: el.id, label: `${el.code} | ID: ${el.experiment_id} | ${el.name}` }))
+        : [],
     [practicesData],
   );
 
@@ -92,11 +95,11 @@ function SkillEdit({ onClose, isOpen, id }: SkillEditProps) {
     if (!isOpen) {
       form.resetFields();
     }
-  }, [skillData]);
+  }, [skillData, isOpen]);
 
   useEffect(() => {
     if (isUpdateSkillSuccess) {
-      toast.success('Prática atualizada com sucesso!').then();
+      toast.success('Habilidade atualizada com sucesso!').then();
       form.resetFields();
       onClose();
     }

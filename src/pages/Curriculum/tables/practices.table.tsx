@@ -110,6 +110,47 @@ export function PracticesTable() {
 
   const [currentSource, setCurrentSource] = useState<DataType[]>(dataSource);
 
+  const exportHeaders = useMemo(
+    () => [
+      { label: 'Código', key: 'code' },
+      { label: 'Prática', key: 'name' },
+      { label: 'Descrição', key: 'description' },
+      { label: 'ID do Laboratório', key: 'experiment_id' },
+      { label: 'Nome do Laboratório', key: 'experiment_name' },
+      { label: 'Áreas', key: 'areas' },
+      { label: 'Habilidades', key: 'skills' },
+    ],
+    [],
+  );
+
+  const exportData = useMemo(
+    () =>
+      selectedRowKeys.length
+        ? selectedRowKeys.map((key) => {
+            const practice = practicesData?.find((el) => el.id === key);
+
+            return {
+              code: practice?.code.trim(),
+              name: practice?.name.trim(),
+              description: practice?.description.trim(),
+              experiment_id: practice?.experiment_id,
+              experiment_name: practice?.experiment.name.trim(),
+              areas: practice?.experiment.areas.map((el) => el.name.trim()).join(', '),
+              skills: practice?.skills.map((el) => el.code.trim()).join(', '),
+            };
+          })
+        : dataSource?.map((practice) => ({
+            code: practice?.code.trim(),
+            name: practice?.name.trim(),
+            description: practice?.description.trim(),
+            experiment_id: practice?.experiment_id,
+            experiment_name: practice?.experiment_name.trim(),
+            areas: practice?.areas.map((el) => el.trim()).join(', '),
+            skills: practice?.skills.map((el) => el.trim()).join(', '),
+          })),
+    [dataSource, selectedRowKeys],
+  );
+
   const columns: ColumnsType<DataType> = [
     {
       ...SearchColumn({
@@ -293,7 +334,7 @@ export function PracticesTable() {
     <Row gutter={[16, 16]}>
       {contextHolder}
       <Col offset={18} lg={3} sm={12} xs={24}>
-        <CSVLink headers={[]} data={[]} filename="practices-exported">
+        <CSVLink headers={exportHeaders} data={exportData} filename="practices-exported">
           <Tooltip title="Exportar para CSV">
             <Button block type="default" icon={<ExportOutlined />}>
               Exportar

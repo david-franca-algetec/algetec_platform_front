@@ -38,7 +38,7 @@ import { useGetDemandsTagsQuery, useGetExperimentsQuery, useStoreDemandMutation 
 import { useGetDepartmentsQuery } from '../../services/department.service';
 import { useGetInstitutionsQuery } from '../../services/institution.service';
 import { useGetUsersQuery } from '../../services/user.service';
-import { tagRender } from '../VersionControl/tagRender';
+import { tagRender } from '../Releases/tagRender';
 import { Checklist, IChecklistSelectProps } from './Checklist';
 import { SelectOption } from './types';
 
@@ -648,7 +648,7 @@ export function CreateDemandPage() {
                       <Col span={8}>
                         <Form.Item
                           name="experiment_id"
-                          label="Prática"
+                          label="Laboratório"
                           rules={[
                             {
                               required: true,
@@ -657,7 +657,7 @@ export function CreateDemandPage() {
                           ]}
                         >
                           <Select
-                            placeholder="Selecione uma Prática"
+                            placeholder="Selecione um Laboratório"
                             allowClear
                             showSearch
                             disabled={experimentsLoading}

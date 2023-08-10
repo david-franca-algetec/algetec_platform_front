@@ -14,7 +14,7 @@ import { ISSUES_STATUS } from '../../../models/enum/issuesStatus.enum';
 import { PRIORITY } from '../../../models/enum/priority.enum';
 import { ExperimentIssue } from '../../../services/experiments.service';
 import { useDeleteIssuesMutation } from '../../../services/issues.service';
-import { IssueCreate, IssueEdit } from '../../IssueTracker';
+import { IssueCreate, IssueEdit } from '../../Issues';
 
 interface ExperimentTableProps {
   dataSource: ExperimentIssue[];

@@ -59,7 +59,7 @@ import {
 import { useGetInstitutionsQuery } from '../../services/institution.service';
 import { useDeleteDemandFileMutation } from '../../services/upload.service';
 import { useGetUsersQuery } from '../../services/user.service';
-import { tagRender } from '../VersionControl/tagRender';
+import { tagRender } from '../Releases/tagRender';
 import { Checklist, IChecklistParams, IChecklistSelectProps } from './Checklist';
 
 interface InitialValues {
@@ -1496,9 +1496,9 @@ export function EditDemandPage() {
                             </Form.Item>
                           </Col>
                           <Col span={8}>
-                            <Form.Item name="experiment_id" label="Prática">
+                            <Form.Item name="experiment_id" label="Laboratório">
                               <Select
-                                placeholder="Selecione uma Prática"
+                                placeholder="Selecione um Laboratório"
                                 allowClear
                                 showSearch
                                 disabled={experimentsLoading || !(isAdmin || isLeader)}

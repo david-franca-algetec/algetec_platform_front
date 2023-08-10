@@ -1,4 +1,5 @@
 import { Card, Col, Row, Tabs, TabsProps } from 'antd';
+import { SidebarWithHeader } from '../../components';
 import { PracticesTable } from './tables/practices.table';
 import { SkillsTable } from './tables/skills.table';
 
@@ -17,12 +18,14 @@ export function CurriculumList() {
   ];
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={24}>
-        <Card>
-          <Tabs defaultActiveKey="1" items={items} />
-        </Card>
-      </Col>
-    </Row>
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          <Card>
+            <Tabs defaultActiveKey="1" items={items} />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

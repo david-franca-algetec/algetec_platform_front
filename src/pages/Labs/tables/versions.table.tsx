@@ -22,8 +22,7 @@ import { sortByDate } from '../../../helpers/sortDate';
 import { useDisclosure } from '../../../hooks/useDisclosure';
 import { ExperimentRelease, ExperimentReleaseResponse } from '../../../services/experiments.service';
 import { ReleaseType, useDeleteReleaseMutation } from '../../../services/releases.service';
-import { handleTypes } from '../../VersionControl';
-import { EditVersion } from '../../VersionControl/Edit';
+import { EditRelease, handleTypes } from '../../Releases';
 
 interface ReleaseTableProps {
   dataSource: ExperimentReleaseResponse[];
@@ -496,7 +495,7 @@ export function ReleaseTable({ dataSource, loading }: ReleaseTableProps) {
           showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} versões`,
         }}
       />
-      <EditVersion id={selectedId} onClose={edit.onClose} open={edit.isOpen} />
+      <EditRelease id={selectedId} onClose={edit.onClose} open={edit.isOpen} />
     </>
   );
 }

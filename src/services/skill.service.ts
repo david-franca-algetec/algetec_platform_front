@@ -129,10 +129,7 @@ export const skillsApi = api.injectEndpoints({
       invalidatesTags: ['Skills'],
     }),
     showSkill: build.query<Skills, number>({
-      query: (id) => ({
-        url: `skills/show/${id}`,
-        method: 'GET',
-      }),
+      query: (id) => `skills/show/${id}`,
       providesTags: ['Skills'],
       transformResponse: (response: Skills[]) => response[0],
     }),

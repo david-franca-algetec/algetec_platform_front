@@ -7,7 +7,7 @@ import type { ColumnsType, Key, TableRowSelection } from 'antd/es/table/interfac
 import { orderBy } from 'lodash';
 import { useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
-import { SearchColumn } from '../../components';
+import { SearchColumn, SidebarWithHeader } from '../../components';
 import { useAppSelector } from '../../config/hooks';
 import { getUniqueColor, handleError, handleTypeName } from '../../helpers';
 import { useDisclosure } from '../../hooks/useDisclosure';
@@ -169,63 +169,65 @@ export function ChecklistPage() {
   );
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col lg={18} sm={24} xs={24}>
-        <Typography.Title level={4}>Lista de tarefas</Typography.Title>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="checklists-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col lg={18} sm={24} xs={24}>
+          <Typography.Title level={4}>Lista de tarefas</Typography.Title>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="checklists-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col lg={3} sm={12} xs={24}>
+          <Tooltip title="Adicionar">
+            <Button
+              block
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{
+                display: user?.role.admin ? 'inline' : 'none',
+              }}
+              onClick={() => {
+                create.onOpen();
+              }}
+            >
+              Adicionar
             </Button>
           </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col lg={3} sm={12} xs={24}>
-        <Tooltip title="Adicionar">
-          <Button
-            block
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              display: user?.role.admin ? 'inline' : 'none',
-            }}
-            onClick={() => {
-              create.onOpen();
-            }}
-          >
-            Adicionar
-          </Button>
-        </Tooltip>
-      </Col>
-      <Col span={24}>
-        <Card>
-          {contextHolder}
-          <Table
-            loading={isLoading}
-            size="small"
-            columns={columns}
-            dataSource={data}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
-            }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal(total, range) {
-                return `${range[0]}-${range[1]} de ${total} instituições`;
-              },
-            }}
-            rowSelection={rowSelection}
-          />
-          <EditChecklist onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
-          <CreateChecklist onClose={create.onClose} open={create.isOpen} />
-        </Card>
-      </Col>
-    </Row>
+        </Col>
+        <Col span={24}>
+          <Card>
+            {contextHolder}
+            <Table
+              loading={isLoading}
+              size="small"
+              columns={columns}
+              dataSource={data}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal(total, range) {
+                  return `${range[0]}-${range[1]} de ${total} instituições`;
+                },
+              }}
+              rowSelection={rowSelection}
+            />
+            <EditChecklist onClose={edit.onClose} id={selectedId} open={edit.isOpen} />
+            <CreateChecklist onClose={create.onClose} open={create.isOpen} />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }

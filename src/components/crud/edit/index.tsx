@@ -2,6 +2,7 @@ import { ArrowLeftOutlined, EyeOutlined, ReloadOutlined, UnorderedListOutlined }
 import { Button, Col, Row, Space } from 'antd';
 import { PropsWithChildren } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { SidebarWithHeader } from '../../Sidebar';
 
 interface EditProps extends PropsWithChildren {
   refetch: () => void;
@@ -16,7 +17,7 @@ export function Edit({ refetch, children, resource, title, name, isShow }: EditP
   const { id } = useParams();
 
   return (
-    <>
+    <SidebarWithHeader>
       <Row>
         <Col span={24}>
           <div className="flex items-center justify-between w-full pb-4">
@@ -48,7 +49,7 @@ export function Edit({ refetch, children, resource, title, name, isShow }: EditP
         </Col>
       </Row>
       {children}
-    </>
+    </SidebarWithHeader>
   );
 }
 

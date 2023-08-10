@@ -34,7 +34,7 @@ import { Key, useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 
-import { BooleanField, DateField, SearchColumn, TagField, TextField } from '../../components';
+import { BooleanField, DateField, SearchColumn, SidebarWithHeader, TagField, TextField } from '../../components';
 import { UrlField } from '../../components/fields/url';
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { selectCurrentUser } from '../../config/reducers/authSlice';
@@ -82,7 +82,7 @@ interface FormFilters {
 
 const { confirm } = Modal;
 
-export function IssueTrackerList() {
+export function IssuesList() {
   const edit = useDisclosure();
   const create = useDisclosure();
   const [id, setId] = useState<number>();
@@ -593,194 +593,196 @@ export function IssueTrackerList() {
   }, [problem, status, priority, approved, creator, responsible, experimentId, version]);
 
   return (
-    <Row gutter={[16, 16]} className="h-full">
-      {contextHolder}
-      <Col lg={isCollapsible ? 0 : 6} sm={isCollapsible ? 0 : 24} xs={isCollapsible ? 0 : 24}>
-        <Row gutter={[16, 16]}>
-          <Col span={24}>
-            <Typography.Title level={4}>Filtros</Typography.Title>
-          </Col>
-          <Col span={24}>
-            <Card className="h-full">
-              <Space direction="vertical" className="w-full mb-4">
-                <Button block onClick={handleUrgentCorrection}>
-                  Correção Urgente
-                </Button>
-                <Button block onClick={handleCorrectionPending}>
-                  Correção Pendente
-                </Button>
-                <Button block onClick={handlePendingApproval}>
-                  Aprovação Pendente
-                </Button>
-              </Space>
-              <Form layout="vertical" form={form} onFinish={onFinish}>
-                <Form.Item label="Problema" name="problem">
-                  <Input />
-                </Form.Item>
-                <Form.Item name="experimentId" label="Prática">
-                  <Select
-                    placeholder="Selecione uma Prática"
-                    allowClear
-                    showSearch
-                    disabled={isExperimentsLoading}
-                    options={experimentsOptions}
-                    optionFilterProp="label"
-                  />
-                </Form.Item>
-                <Form.Item label="Gravidade" name="priority">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    options={[
-                      {
-                        label: 'Baixa',
-                        value: PRIORITY.LOW,
-                      },
-                      {
-                        label: 'Normal',
-                        value: PRIORITY.NORMAL,
-                      },
-                      {
-                        label: 'Alta',
-                        value: PRIORITY.HIGH,
-                      },
-                      {
-                        label: 'Critica',
-                        value: PRIORITY.CRITICAL,
-                      },
-                    ]}
-                  />
-                </Form.Item>
-                <Form.Item label="Status" name="status">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    optionFilterProp="label"
-                    options={[
-                      {
-                        label: ISSUES_STATUS.NEW,
-                        value: ISSUES_STATUS.NEW,
-                      },
-                      {
-                        label: ISSUES_STATUS.IS_NOT_ERROR,
-                        value: ISSUES_STATUS.IS_NOT_ERROR,
-                      },
-                      {
-                        label: ISSUES_STATUS.DUPLICATE,
-                        value: ISSUES_STATUS.DUPLICATE,
-                      },
-                      {
-                        label: ISSUES_STATUS.NO_REMOVE,
-                        value: ISSUES_STATUS.NO_REMOVE,
-                      },
-                      {
-                        label: ISSUES_STATUS.RESOLVED,
-                        value: ISSUES_STATUS.RESOLVED,
-                      },
-                    ]}
-                  />
-                </Form.Item>
-                <Form.Item label="Aprovado" name="approved">
-                  <Radio.Group optionType="button" buttonStyle="solid">
-                    <Radio value>Sim</Radio>
-                    <Radio value={false}>Não</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item label="Autor" name="creator">
-                  <Select
-                    mode="multiple"
-                    optionFilterProp="label"
-                    maxTagCount="responsive"
-                    loading={isUsersLoading}
-                    allowClear
-                    showSearch
-                    options={usersOptions}
-                  />
-                </Form.Item>
-                <Form.Item label="Responsável" name="responsible">
-                  <Select
-                    mode="multiple"
-                    optionFilterProp="label"
-                    maxTagCount="responsive"
-                    loading={isUsersLoading}
-                    allowClear
-                    showSearch
-                    options={usersOptions}
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" block htmlType="submit">
-                    Filtrar
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]} className="h-full">
+        {contextHolder}
+        <Col lg={isCollapsible ? 0 : 6} sm={isCollapsible ? 0 : 24} xs={isCollapsible ? 0 : 24}>
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Typography.Title level={4}>Filtros</Typography.Title>
+            </Col>
+            <Col span={24}>
+              <Card className="h-full">
+                <Space direction="vertical" className="w-full mb-4">
+                  <Button block onClick={handleUrgentCorrection}>
+                    Correção Urgente
                   </Button>
-                </Form.Item>
-              </Form>
-            </Card>
-          </Col>
-        </Row>
-      </Col>
-      <Col lg={isCollapsible ? 24 : 18}>
-        <Row gutter={[16, 16]}>
-          <Col lg={8} sm={24} xs={24}>
-            <Typography.Title level={4}>Problemas</Typography.Title>
-          </Col>
-          <Col lg={4} sm={12} xs={24}>
-            <Button block icon={<ClearOutlined />} onClick={handleClear}>
-              Limpar
-            </Button>
-          </Col>
-          <Col lg={4} sm={12} xs={24}>
-            <Button block icon={<FilterOutlined />} onClick={() => setIsCollapsible(!isCollapsible)}>
-              Filtros
-            </Button>
-          </Col>
-          <Col lg={4} sm={12} xs={24}>
-            {isAllIssuesLoading ? (
-              <Skeleton.Button active={isAllIssuesLoading} block />
-            ) : (
-              <CSVLink headers={exportHeaders} data={exportData} filename="issues-exported">
-                <Tooltip title="Exportar para CSV">
-                  <Button block type="default" icon={<ExportOutlined />}>
-                    {selectedRowKeys.length ? `Exportar ${selectedRowKeys.length}` : 'Exportar'}
+                  <Button block onClick={handleCorrectionPending}>
+                    Correção Pendente
                   </Button>
-                </Tooltip>
-              </CSVLink>
-            )}
-          </Col>
-          <Col lg={4} sm={12} xs={24}>
-            <Tooltip title="Adicionar">
-              <Button block type="primary" icon={<PlusOutlined />} onClick={create.onOpen}>
-                Adicionar
+                  <Button block onClick={handlePendingApproval}>
+                    Aprovação Pendente
+                  </Button>
+                </Space>
+                <Form layout="vertical" form={form} onFinish={onFinish}>
+                  <Form.Item label="Problema" name="problem">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="experimentId" label="Prática">
+                    <Select
+                      placeholder="Selecione uma Prática"
+                      allowClear
+                      showSearch
+                      disabled={isExperimentsLoading}
+                      options={experimentsOptions}
+                      optionFilterProp="label"
+                    />
+                  </Form.Item>
+                  <Form.Item label="Gravidade" name="priority">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      options={[
+                        {
+                          label: 'Baixa',
+                          value: PRIORITY.LOW,
+                        },
+                        {
+                          label: 'Normal',
+                          value: PRIORITY.NORMAL,
+                        },
+                        {
+                          label: 'Alta',
+                          value: PRIORITY.HIGH,
+                        },
+                        {
+                          label: 'Critica',
+                          value: PRIORITY.CRITICAL,
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Status" name="status">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      optionFilterProp="label"
+                      options={[
+                        {
+                          label: ISSUES_STATUS.NEW,
+                          value: ISSUES_STATUS.NEW,
+                        },
+                        {
+                          label: ISSUES_STATUS.IS_NOT_ERROR,
+                          value: ISSUES_STATUS.IS_NOT_ERROR,
+                        },
+                        {
+                          label: ISSUES_STATUS.DUPLICATE,
+                          value: ISSUES_STATUS.DUPLICATE,
+                        },
+                        {
+                          label: ISSUES_STATUS.NO_REMOVE,
+                          value: ISSUES_STATUS.NO_REMOVE,
+                        },
+                        {
+                          label: ISSUES_STATUS.RESOLVED,
+                          value: ISSUES_STATUS.RESOLVED,
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Aprovado" name="approved">
+                    <Radio.Group optionType="button" buttonStyle="solid">
+                      <Radio value>Sim</Radio>
+                      <Radio value={false}>Não</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                  <Form.Item label="Autor" name="creator">
+                    <Select
+                      mode="multiple"
+                      optionFilterProp="label"
+                      maxTagCount="responsive"
+                      loading={isUsersLoading}
+                      allowClear
+                      showSearch
+                      options={usersOptions}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Responsável" name="responsible">
+                    <Select
+                      mode="multiple"
+                      optionFilterProp="label"
+                      maxTagCount="responsive"
+                      loading={isUsersLoading}
+                      allowClear
+                      showSearch
+                      options={usersOptions}
+                    />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" block htmlType="submit">
+                      Filtrar
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+        <Col lg={isCollapsible ? 24 : 18}>
+          <Row gutter={[16, 16]}>
+            <Col lg={8} sm={24} xs={24}>
+              <Typography.Title level={4}>Problemas</Typography.Title>
+            </Col>
+            <Col lg={4} sm={12} xs={24}>
+              <Button block icon={<ClearOutlined />} onClick={handleClear}>
+                Limpar
               </Button>
-            </Tooltip>
-          </Col>
-          <Col span={24}>
-            <Card>
-              <Table
-                onChange={(pagination, filters, sorter) => {
-                  handleTableChange(pagination, filters, sorter);
-                }}
-                loading={isAllIssuesLoading || isFetching}
-                className="w-full"
-                size="small"
-                dataSource={dataSource}
-                columns={columns}
-                rowSelection={rowSelection}
-                scroll={{ x: 1000, y: '72vh' }}
-                pagination={{
-                  position: ['bottomCenter'],
-                  defaultPageSize: 100,
-                  pageSizeOptions: [100, 200, 500],
-                  total: meta?.total,
-                  current: meta?.current_page,
-                  showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} problemas`,
-                }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </Col>
-      <IssueEdit onClose={edit.onClose} isOpen={edit.isOpen} id={id} />
-      <IssueCreate isOpen={create.isOpen} onClose={create.onClose} />
-    </Row>
+            </Col>
+            <Col lg={4} sm={12} xs={24}>
+              <Button block icon={<FilterOutlined />} onClick={() => setIsCollapsible(!isCollapsible)}>
+                Filtros
+              </Button>
+            </Col>
+            <Col lg={4} sm={12} xs={24}>
+              {isAllIssuesLoading ? (
+                <Skeleton.Button active={isAllIssuesLoading} block />
+              ) : (
+                <CSVLink headers={exportHeaders} data={exportData} filename="issues-exported">
+                  <Tooltip title="Exportar para CSV">
+                    <Button block type="default" icon={<ExportOutlined />}>
+                      {selectedRowKeys.length ? `Exportar ${selectedRowKeys.length}` : 'Exportar'}
+                    </Button>
+                  </Tooltip>
+                </CSVLink>
+              )}
+            </Col>
+            <Col lg={4} sm={12} xs={24}>
+              <Tooltip title="Adicionar">
+                <Button block type="primary" icon={<PlusOutlined />} onClick={create.onOpen}>
+                  Adicionar
+                </Button>
+              </Tooltip>
+            </Col>
+            <Col span={24}>
+              <Card>
+                <Table
+                  onChange={(pagination, filters, sorter) => {
+                    handleTableChange(pagination, filters, sorter);
+                  }}
+                  loading={isAllIssuesLoading || isFetching}
+                  className="w-full"
+                  size="small"
+                  dataSource={dataSource}
+                  columns={columns}
+                  rowSelection={rowSelection}
+                  scroll={{ x: 1000, y: '72vh' }}
+                  pagination={{
+                    position: ['bottomCenter'],
+                    defaultPageSize: 100,
+                    pageSizeOptions: [100, 200, 500],
+                    total: meta?.total,
+                    current: meta?.current_page,
+                    showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} problemas`,
+                  }}
+                />
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+        <IssueEdit onClose={edit.onClose} isOpen={edit.isOpen} id={id} />
+        <IssueCreate isOpen={create.isOpen} onClose={create.onClose} />
+      </Row>
+    </SidebarWithHeader>
   );
 }

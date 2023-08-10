@@ -44,7 +44,7 @@ interface FormProps {
   comment: string;
 }
 
-export function IssueTrackerShow() {
+export function IssuesShow() {
   const params = useParams();
   const id = useMemo(() => (params.id ? Number(params.id) : 0), [params.id]);
   const edit = useDisclosure();

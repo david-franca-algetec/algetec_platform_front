@@ -16,7 +16,7 @@ import { forEach, groupBy, orderBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
-import { BooleanField, DateField, SearchColumn, TagField, TextField } from '../../components';
+import { BooleanField, DateField, SearchColumn, SidebarWithHeader, TagField, TextField } from '../../components';
 import { UrlField } from '../../components/fields/url';
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { setVersionFilters } from '../../config/reducers/versionSlice';
@@ -31,9 +31,9 @@ import {
   useDeleteReleaseMutation,
   useGetReleasesQuery,
 } from '../../services/releases.service';
-import { CreateVersion } from './Create';
+import { CreateRelease } from './create';
 import { CreateTag } from './CreateTag';
-import { EditVersion } from './Edit';
+import { EditRelease } from './edit';
 
 interface DataType {
   key: Key;
@@ -101,7 +101,7 @@ export const handleTypes = (types: DataType['type'], value: string, index: strin
   return false;
 };
 
-export function VersionControlPage() {
+export function ListReleases() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAppSelector((state) => state.auth);
   const { author, id, name, pendency } = useAppSelector((state) => state.version);
@@ -744,88 +744,90 @@ export function VersionControlPage() {
   }, []);
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col offset={screenSize.lg ? 10 : undefined} lg={4} md={12} sm={12} xs={24}>
-        <Select
-          className="w-full"
-          options={menuItems}
-          placeholder="Pendências"
-          allowClear
-          value={pendency}
-          onChange={handleSelectPendency}
-        />
-      </Col>
-      <Col lg={3} md={12} sm={12} xs={24}>
-        <CSVLink headers={exportHeaders} data={exportData} filename="versions-exported">
-          <Tooltip title="Exportar para CSV">
-            <Button block type="default" icon={<ExportOutlined />}>
-              Exportar
+    <SidebarWithHeader>
+      <Row gutter={[16, 16]}>
+        <Col offset={screenSize.lg ? 10 : undefined} lg={4} md={12} sm={12} xs={24}>
+          <Select
+            className="w-full"
+            options={menuItems}
+            placeholder="Pendências"
+            allowClear
+            value={pendency}
+            onChange={handleSelectPendency}
+          />
+        </Col>
+        <Col lg={3} md={12} sm={12} xs={24}>
+          <CSVLink headers={exportHeaders} data={exportData} filename="versions-exported">
+            <Tooltip title="Exportar para CSV">
+              <Button block type="default" icon={<ExportOutlined />}>
+                Exportar
+              </Button>
+            </Tooltip>
+          </CSVLink>
+        </Col>
+        <Col lg={4} md={12} sm={12} xs={24}>
+          <Tooltip title="Adicionar Lançamento">
+            <Button
+              block
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{
+                display: user?.role.releases ? 'inline' : 'none',
+              }}
+              onClick={() => {
+                create.onOpen();
+              }}
+            >
+              Lançamento
             </Button>
           </Tooltip>
-        </CSVLink>
-      </Col>
-      <Col lg={4} md={12} sm={12} xs={24}>
-        <Tooltip title="Adicionar Lançamento">
-          <Button
-            block
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              display: user?.role.releases ? 'inline' : 'none',
-            }}
-            onClick={() => {
-              create.onOpen();
-            }}
-          >
-            Lançamento
-          </Button>
-        </Tooltip>
-      </Col>
-      <Col lg={3} md={12} sm={12} xs={24}>
-        <Tooltip title="Adicionar Tipo">
-          <Button
-            block
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              display: user?.role.admin ? 'inline' : 'none',
-            }}
-            onClick={() => {
-              tag.onOpen();
-            }}
-          >
-            Tipo
-          </Button>
-        </Tooltip>
-      </Col>
-      <Col span={24}>
-        <Card>
-          {contextHolder}
-          <Table
-            loading={isReleasesLoading}
-            size="small"
-            style={{ width: '100%' }}
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1000, y: '72vh' }}
-            onChange={() => {
-              if (selectedRowKeys.length) {
-                setSelectedRowKeys([]);
-              }
-            }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              pageSizeOptions: [100, 200, 500],
-              showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} versões`,
-            }}
-            rowSelection={rowSelection}
-          />
-          <CreateVersion onClose={create.onClose} open={create.isOpen} />
-          <EditVersion id={selectedId} onClose={edit.onClose} open={edit.isOpen} />
-          <CreateTag onClose={tag.onClose} open={tag.isOpen} />
-        </Card>
-      </Col>
-    </Row>
+        </Col>
+        <Col lg={3} md={12} sm={12} xs={24}>
+          <Tooltip title="Adicionar Tipo">
+            <Button
+              block
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{
+                display: user?.role.admin ? 'inline' : 'none',
+              }}
+              onClick={() => {
+                tag.onOpen();
+              }}
+            >
+              Tipo
+            </Button>
+          </Tooltip>
+        </Col>
+        <Col span={24}>
+          <Card>
+            {contextHolder}
+            <Table
+              loading={isReleasesLoading}
+              size="small"
+              style={{ width: '100%' }}
+              columns={columns}
+              dataSource={data}
+              scroll={{ x: 1000, y: '72vh' }}
+              onChange={() => {
+                if (selectedRowKeys.length) {
+                  setSelectedRowKeys([]);
+                }
+              }}
+              pagination={{
+                position: ['bottomCenter'],
+                defaultPageSize: 100,
+                pageSizeOptions: [100, 200, 500],
+                showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} versões`,
+              }}
+              rowSelection={rowSelection}
+            />
+            <CreateRelease onClose={create.onClose} open={create.isOpen} />
+            <EditRelease id={selectedId} onClose={edit.onClose} open={edit.isOpen} />
+            <CreateTag onClose={tag.onClose} open={tag.isOpen} />
+          </Card>
+        </Col>
+      </Row>
+    </SidebarWithHeader>
   );
 }
