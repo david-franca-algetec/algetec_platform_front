@@ -14,6 +14,7 @@ import {
   Button,
   Card,
   Col,
+  DatePicker,
   InputNumber,
   message,
   Modal,
@@ -451,6 +452,12 @@ export function DemandPage() {
       showSorterTooltip: false,
     },
     {
+      ...SearchColumn({
+        index: 'finished_at',
+        title: 'Prazo',
+        includes: true,
+        type: 'datetime',
+      }),
       title: 'Prazo',
       key: 'finished_at',
       dataIndex: 'finished_at',
@@ -460,6 +467,18 @@ export function DemandPage() {
       sorter: {
         compare: (a, b) => sortByDate(a.finished_at, b.finished_at),
       },
+      filters: [
+        {
+          text: (
+            <Space>
+              <Typography.Text>Início</Typography.Text>
+              <DatePicker format="DD/MM/YYYY HH:mm" showTime={{ format: 'HH:mm' }} showToday />
+            </Space>
+          ),
+          value: 'start',
+        },
+        { text: <DatePicker format="DD/MM/YYYY HH:mm" showTime={{ format: 'HH:mm' }} showToday />, value: 'end' },
+      ],
       sortOrder: sorterKey === 'finished_at' && order ? (order as SortOrder) : null,
       showSorterTooltip: false,
     },

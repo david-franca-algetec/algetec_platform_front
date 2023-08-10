@@ -1,6 +1,6 @@
 // noinspection JSIgnoredPromiseFromCall
 
-import { PlusOutlined, StopOutlined } from '@ant-design/icons';
+import { IssuesCloseOutlined, PlusOutlined, StopOutlined } from '@ant-design/icons';
 import { nanoid } from '@reduxjs/toolkit';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import {
@@ -23,7 +23,7 @@ import { groupBy } from 'lodash';
 import moment from 'moment';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useComponentSize } from 'react-use-size';
 import { TagField, TextField } from '../../components';
 import { Show } from '../../components/crud/show';
@@ -37,8 +37,9 @@ import { AddLog } from './Log';
 const { useBreakpoint } = Grid;
 const { Panel } = Collapse;
 
-export function DemandsView() {
+export function DemandsShow() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [toast, contextHolder] = message.useMessage();
   const { data: demandData, isLoading, refetch } = useGetDemandByIdQuery(Number(id) || skipToken);
   const create = useDisclosure();
@@ -122,11 +123,11 @@ export function DemandsView() {
         <Col span={24}>
           {demand?.issues.length ? (
             <List
-              grid={{ gutter: 2, xs: 1, sm: 2, md: 2, column: 2 }}
+              grid={{ gutter: 16, xs: 1, sm: 2, md: 3, column: 3 }}
               dataSource={demand.issues}
               renderItem={(item) => (
                 <List.Item key={nanoid()} className="w-full">
-                  <Card className="w-full" title={item.title}>
+                  <Card className="w-full" title={item.title} type="inner">
                     <Typography.Text>{item.approved}</Typography.Text>
                     <br />
                     <Typography.Text>{item.status}</Typography.Text>
@@ -324,6 +325,13 @@ export function DemandsView() {
         tabList={tabList}
         activeTabKey={activeTabKey}
         onTabChange={onTabChange}
+        tabBarExtraContent={
+          demand?.issues.length ? (
+            <Button icon={<IssuesCloseOutlined />} onClick={() => navigate(`/issues?experiment_id=${demand?.id}`)}>
+              Problemas
+            </Button>
+          ) : null
+        }
       >
         {contextHolder}
         {contentList[activeTabKey]}

@@ -9,7 +9,7 @@ import { Dashboard } from '../pages/Dashboard';
 import { DemandPage } from '../pages/Demand';
 import { CreateDemandPage } from '../pages/Demand/Create';
 import { EditDemandPage } from '../pages/Demand/Edit';
-import { DemandsView } from '../pages/Demand/View';
+import { DemandsShow } from '../pages/Demand/show';
 import { DocumentsCreate, DocumentsList, DocumentsShow } from '../pages/Documents';
 
 import { ErrorPage } from '../pages/Error';
@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
   },
   {
     path: 'demands/show/:id',
-    element: <DemandsView />,
+    element: <DemandsShow />,
   },
   {
     path: 'profile',

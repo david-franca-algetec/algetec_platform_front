@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, InputRef, Space } from 'antd';
+import { Button, DatePicker, Input, InputRef, Space } from 'antd';
 import { ColumnType, FilterConfirmProps } from 'antd/es/table/interface';
 import { toLower } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
@@ -11,9 +11,10 @@ interface ISearchColumn<K> {
   includes?: boolean;
   onSearch?: (text: string) => void;
   dataValue?: string;
+  type?: 'datetime' | 'text' | 'array';
 }
 
-export function SearchColumn<T>({ index, title, includes, onSearch, dataValue }: ISearchColumn<T>) {
+export function SearchColumn<T>({ index, title, includes, onSearch, dataValue, type }: ISearchColumn<T>) {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -29,17 +30,35 @@ export function SearchColumn<T>({ index, title, includes, onSearch, dataValue }:
     setSearchText('');
   };
 
-  const getColumnSearchProps = (dataIndex: keyof T, dataTitle: string, isIncludes?: boolean): ColumnType<T> => ({
+  const getColumnSearchProps = (
+    dataIndex: keyof T,
+    dataTitle: string,
+    isIncludes?: boolean,
+    type?: 'datetime' | 'text' | 'array',
+  ): ColumnType<T> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()} aria-hidden="true">
-        <Input
-          ref={searchInput}
-          placeholder={`Pesquisar ${dataTitle}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
+        {type === 'text' ? (
+          <Input
+            ref={searchInput}
+            placeholder={`Pesquisar ${dataTitle}`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+        ) : (
+          <DatePicker
+            style={{ marginBottom: 8, display: 'block' }}
+            format="DD-MM-YY"
+            onChange={(e) => {
+              console.log(e);
+              // setSelectedKeys([e]);
+            }}
+            allowClear
+          />
+        )}
+
         <Space>
           <Button
             type="primary"
@@ -110,5 +129,5 @@ export function SearchColumn<T>({ index, title, includes, onSearch, dataValue }:
     }
   }, [searchText]);
 
-  return getColumnSearchProps(index, title, includes);
+  return getColumnSearchProps(index, title, includes, type ?? 'text');
 }
