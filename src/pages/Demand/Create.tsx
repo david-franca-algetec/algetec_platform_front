@@ -143,10 +143,8 @@ export function CreateDemandPage() {
       values.list.forEach((value, index) => {
         switch (value.type) {
           case 'coding':
-            demand.coding_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.coding_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.coding_developers = [value.developers];
             demand.coding_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.coding_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();
@@ -158,10 +156,8 @@ export function CreateDemandPage() {
             }
             break;
           case 'modeling':
-            demand.modeling_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.modeling_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.modeling_developers = [value.developers];
             demand.modeling_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.modeling_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();
@@ -173,10 +169,8 @@ export function CreateDemandPage() {
             }
             break;
           case 'ualab':
-            demand.ualab_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.ualab_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.ualab_developers = [value.developers];
             demand.ualab_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.ualab_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();
@@ -188,10 +182,8 @@ export function CreateDemandPage() {
             }
             break;
           case 'testing':
-            demand.testing_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.testing_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.testing_developers = [value.developers];
             demand.testing_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.testing_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();
@@ -203,10 +195,8 @@ export function CreateDemandPage() {
             }
             break;
           case 'scripting':
-            demand.scripting_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.scripting_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.scripting_developers = [value.developers];
             demand.scripting_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.scripting_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();
@@ -218,10 +208,8 @@ export function CreateDemandPage() {
             }
             break;
           case 'designing':
-            demand.designing_deadline = numberOfBusinessDays(
-              value.date_range[0].toDate(),
-              value.date_range[1].toDate(),
-            )?.hours;
+            demand.designing_deadline = numberOfBusinessDays(value.date_range[0].toDate(), value.date_range[1].toDate())
+              ?.hours;
             demand.designing_developers = [value.developers];
             demand.designing_startedAt = value.date_range[0].set('seconds', 0).set('milliseconds', 0).toISOString();
             demand.designing_finishedAt = value.date_range[1].set('seconds', 0).set('milliseconds', 0).toISOString();

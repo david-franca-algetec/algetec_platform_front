@@ -85,14 +85,10 @@ export function SkillsShow() {
                 ))}
               </Descriptions.Item>
               <Descriptions.Item label="Objetos de Competência">
-                {skillData?.objects.map((value) => (
-                  <TagField value={value.name} color={getUniqueColor(value.name)} />
-                ))}
+                {skillData?.objects.map((value) => <TagField value={value.name} color={getUniqueColor(value.name)} />)}
               </Descriptions.Item>
               <Descriptions.Item label="Unidades de Conhecimento">
-                {skillData?.unities.map((value) => (
-                  <TagField value={value.name} color={getUniqueColor(value.name)} />
-                ))}
+                {skillData?.unities.map((value) => <TagField value={value.name} color={getUniqueColor(value.name)} />)}
               </Descriptions.Item>
               <Descriptions.Item label="Área de Competência">
                 {skillData?.competence.competence_area.name}
